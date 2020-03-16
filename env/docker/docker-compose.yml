@@ -1,0 +1,67 @@
+version: '2'
+
+services:
+  php:
+    build: containers/php-fpm
+    restart: always
+    expose:
+      - "9000"
+    environment:
+      LANG: "C.UTF-8"
+    working_dir: /var/www/laingame.net
+    volumes:
+      - ../../:/var/www/laingame.net
+    depends_on:
+      - mysql
+
+  mysql:
+    restart: always
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    security_opt:
+      - label:disable
+    expose:
+      - "3306"
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_USER: 'lain'
+      MYSQL_DATABASE: 'laingame'
+      MYSQL_PASSWORD: 'p4ssp4ss'
+      MYSQL_ROOT_PASSWORD: 'p4ssp4ss'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      LANG: "C.UTF-8"
+    volumes:
+      - ../../database/laingame.sql:/docker-entrypoint-initdb.d/0_init.sql
+
+  nginx:
+    restart: always
+    image: nginx:alpine
+    expose:
+      - "80"
+      - "443"
+    ports:
+      - "${NGINX_PORT}:80"
+    depends_on:
+      - php
+    volumes:
+      - ./config/nginx/vhost:/etc/nginx/conf.d
+    volumes_from:
+      - php
+    networks:
+      default:
+        aliases:
+          - laingame.local
+
+  node:
+    build: containers/node
+    restart: "no"
+    environment:
+      LANG: "C.UTF-8"
+    working_dir: /var/www/laingame.net
+    volumes_from:
+      - php
+
+volumes:
+  mysql:
+    driver: local

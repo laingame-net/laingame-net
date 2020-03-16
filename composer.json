@@ -1,0 +1,11 @@
+{
+    "require": {
+	    "eftec/routeone": "*"
+    },
+    "autoload": {
+            "files": ["src/functions.php"],
+	    "psr-4": {
+		    "Lain\\": "src"
+	    }
+    }
+}

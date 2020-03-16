@@ -1,0 +1,7 @@
+*.swp
+vendor
+composer.lock
+composer.phar
+.idea
+node_modules
+env/docker/.env
