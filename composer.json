@@ -1,9 +1,11 @@
 {
+    "name": "laingame site",
+    "description": "http://laingame.net",
     "require": {
 	    "eftec/routeone": "*"
     },
     "autoload": {
-            "files": ["src/functions.php"],
+        "files": ["src/functions.php"],
 	    "psr-4": {
 		    "Lain\\": "src"
 	    }

@@ -14,14 +14,12 @@ if($debug){
 	header("Pragma: no-cache");
 }
 
-try
-{
+try {
   $ret = $route->callObject('Lain\\%sController', false);
   if(null != $ret)
   {
     echo "sometthing went wrong (return 404 page??) ".$ret."\n";
   }
-}
-catch (Exception $ex) {
+} catch (Exception $ex) {
   echo "sometthing went wrong (return 404 page?) ".$ex."\n";
 }

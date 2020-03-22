@@ -23,16 +23,16 @@ function get_pos_in_level ($pos) {
 
 class Model {
     public $icons = array (
-    0 => '_icon0.png',
-    1 => '_icon1.png',
-    2 => '_icon2.png',
-    3 => '_icon3.png',
-    4 => '_icon4.png',
-    5 => '_icon5.png',
-    6 => '_icon6.png',
-    7 => '_icon7.png',
-    8 => '_icon8.png',
-    9 => '_icon9.png'
+        0 => '_icon0.png',
+        1 => '_icon1.png',
+        2 => '_icon2.png',
+        3 => '_icon3.png',
+        4 => '_icon4.png',
+        5 => '_icon5.png',
+        6 => '_icon6.png',
+        7 => '_icon7.png',
+        8 => '_icon8.png',
+        9 => '_icon9.png'
     );
 
     private $sql_get_block = "select db.id, db.name, db.site, db.pos, db.icon, db.sw, db.q, db.state, db.type, 
@@ -125,94 +125,97 @@ class Model {
 
     public function __construct()
     {
-	require '../config.php';
-	if($this->db) return;
-	try {
-		$options = [
-			    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-			    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-			    #PDO::ATTR_EMULATE_PREPARES   => false,
-			    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
-			    ];
-		$this->db = new PDO('mysql:host='.$hostname.';dbname='.$dbname, $username, $password, $options);
-	} catch (Exception $ex) {
-		die("something went wrong. $ex");
-	}
+        require '../config.php';
+        if($this->db) return;
+        try {
+            $options = [
+                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    #PDO::ATTR_EMULATE_PREPARES   => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
+                    ];
+            $this->db = new PDO('mysql:host='.$hostname.';dbname='.$dbname, $username, $password, $options);
+        } catch (Exception $ex) {
+            die("something went wrong. $ex");
+        }
 
-	$result = $this->db->prepare($this->sql_langs);
-	$result->execute();
-	$this->langs = $result->fetchAll(PDO::FETCH_COLUMN);
+        $result = $this->db->prepare($this->sql_langs);
+        $result->execute();
+        $this->langs = $result->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function getLangStrings($lang)
     {
-	if(!in_array($lang, $this->langs)) $lang = 'en'; // set english if lang code is not regognised
-	$result = $this->db->prepare($this->sql_lang_translation);
-	$result->execute(['lang' => $lang]);
-	$row = $result->fetch(PDO::FETCH_ASSOC);
-	return json_decode($row['translation']);
+        if(!in_array($lang, $this->langs)) $lang = 'en'; // set english if lang code is not regognised
+        $result = $this->db->prepare($this->sql_lang_translation);
+        $result->execute(['lang' => $lang]);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        return json_decode($row['translation']);
     }
 
     public function getBlockPrepare()
     {
-	if(!isset($this->get_block))
-		$this->get_block = $this->db->prepare($this->sql_get_block);
-	return $this->get_block;
+        if(!isset($this->get_block)) {
+            $this->get_block = $this->db->prepare($this->sql_get_block);
+        }
+        return $this->get_block;
     }
 
     public function getBlock($id, $lang)
     {
-	$get_block = $this->getBlockPrepare();
-	$get_block->execute(['id'=>$id, 'lang'=>$lang]);
-	$result = $get_block->fetch(PDO::FETCH_ASSOC);
-	if($result){
-		if($result['subtitles']) 
-			$result['subtitles'] = json_decode($result['subtitles'], true);
-		$result['reveals'] = [];
-		if($result['reveals_ids'] and $result['reveals_names'])
-			$result['reveals'] = array_combine( json_decode( $result['reveals_ids'], true),
-			                                    json_decode( $result['reveals_names'], true) );
-	}
-	return $result;
+        $get_block = $this->getBlockPrepare();
+        $get_block->execute(['id'=>$id, 'lang'=>$lang]);
+        $result = $get_block->fetch(PDO::FETCH_ASSOC);
+        if($result){
+            if($result['subtitles']) {
+                $result['subtitles'] = json_decode($result['subtitles'], true);
+            }
+            $result['reveals'] = [];
+            if($result['reveals_ids'] and $result['reveals_names']) {
+                $result['reveals'] = array_combine( json_decode( $result['reveals_ids'], true),
+                                                    json_decode( $result['reveals_names'], true) );
+            }
+        }
+        return $result;
     }
     
     public function getHistoryList($id, $lang)
     {
-	$list = $this->db->prepare($this->sql_history_list);
-	$list->execute(['id'=>$id, 'lang'=>$lang]);
-	$result = $list->fetchAll(PDO::FETCH_ASSOC);
-	return $result;
+        $list = $this->db->prepare($this->sql_history_list);
+        $list->execute(['id'=>$id, 'lang'=>$lang]);
+        $result = $list->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
 
     public function getBlocksTable($site)
     {
-	if($site != 0 or $site != 1) $site = 0;
-	$content = array();
-	$table_result = $this->db->prepare($this->sql_blocks_table);
-	$table_result->execute(); //['site'=>$site]);
-	while ($dd = $table_result->fetch(PDO::FETCH_ASSOC)) {
-		$content[$dd['site']][$dd['level']][$dd['row']][$dd['col']] = array(
-			'id' => $dd['id'],
-			'icon' => $this->icons[$dd['icon']],
-			'name' => $dd['name']
-		);
-	}
-	return $content;
+        if($site != 0 or $site != 1) $site = 0;
+        $content = array();
+        $table_result = $this->db->prepare($this->sql_blocks_table);
+        $table_result->execute(); //['site'=>$site]);
+        while ($dd = $table_result->fetch(PDO::FETCH_ASSOC)) {
+            $content[$dd['site']][$dd['level']][$dd['row']][$dd['col']] = array(
+                'id' => $dd['id'],
+                'icon' => $this->icons[$dd['icon']],
+                'name' => $dd['name']
+            );
+        }
+        return $content;
     }
 
     public function getBlocksByTag($tag)
     {
-	if(!ctype_digit($tag) or intval($tag) > 416) return false;
-	$table_result = $this->db->prepare($this->sql_blocks_by_tag);
-	$table_result->execute(['tag'=>$tag]);
-	$result = $table_result->fetchAll(PDO::FETCH_ASSOC);
-	return $result;
+        if(!ctype_digit($tag) or intval($tag) > 416) return false;
+        $table_result = $this->db->prepare($this->sql_blocks_by_tag);
+        $table_result->execute(['tag'=>$tag]);
+        $result = $table_result->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
 
     public function updateTranslation($id, $lang, $translation_json)
     {
-	$result = $this->db->prepare($this->sql_update_translation);
-	$result->execute(['id'=>$id, 'lang'=>$lang, 'sub'=> $translation_json]);
+        $result = $this->db->prepare($this->sql_update_translation);
+        $result->execute(['id'=>$id, 'lang'=>$lang, 'sub'=> $translation_json]);
     }
 
 }
