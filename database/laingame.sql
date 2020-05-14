@@ -47,7 +47,8 @@ CREATE TABLE `data_block` (
   `state` int NOT NULL,
   `need_id` int DEFAULT NULL,
   `type` int NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `lower_name_idx` ((lower(`name`)))
 ) ENGINE=InnoDB AUTO_INCREMENT=833 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
