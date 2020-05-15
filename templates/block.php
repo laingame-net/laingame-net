@@ -1,7 +1,7 @@
 <?php $this->init_page() // we must call this function at the begining of any page ?>
 Available languages: 
 <?php foreach ($langs ?? [] as $val): ?>
-  <a href="/block/view/<?=$block['id'].'/'.$val?>"><?=$val?></a>  
+  <a href="/block/view/<?=$block['name'].'/'.$val?>"><?=$val?></a>  
 <?php endforeach; ?>
   <a href="/lang/add/">add</a>  
   <div class='table'>
@@ -31,7 +31,7 @@ Available languages:
             nothing
 <?php endif; ?>
 <?php foreach ($block['reveals'] ?? [] as $id => $name): ?>
-            <a href="/block/view/<?=$id."/".$lang?>"><?=$name?></a>
+            <a href="/block/view/<?=$name."/".$lang?>"><?=$name?></a>
 <?php endforeach; ?>
           </div></div>
 
@@ -88,7 +88,7 @@ Warning! Translation on your language (<?=$lang?>) in not available. Showed Engl
       <th>English (default language)</th>
       <th>If you want to help please fill <?=$lang?> translation and press Submit</th>
     </tr>
-<?php foreach ($block['subtitles'] ?? [] as $line): ?>
+<?php foreach ($block['subtitles'] ?? [] as $key => $line): ?>
     <tr>
       <td style="width:40px"><input type="text" id="actor<?=$key?>" style="width:93%" name="actor[]" value="<?=$line['actor']?>"></td>
       <td style="width:800px"><?=$line['text']?></td>

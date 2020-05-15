@@ -47,18 +47,18 @@ class Model {
     db.page_pos
 
     ,(SELECT  
-    JSON_ARRAYAGG(db.id)
-    FROM data_block db 
-    left join data_block as need1 on db.need_id = need1.id
-    WHERE db.need_id = :id
-    group by db.need_id) reveals_ids
+    JSON_ARRAYAGG(db1.id)
+    FROM data_block db1
+    left join data_block as need1 on db1.need_id = need1.id
+    WHERE db1.need_id = db.id
+    group by db1.need_id) reveals_ids
 
     ,(SELECT 
-    JSON_ARRAYAGG(db.name)
-    FROM data_block db 
-    left join data_block as need2 on db.need_id = need2.id
-    WHERE db.need_id = :id
-    group by db.need_id) reveals_names
+    JSON_ARRAYAGG(db2.name)
+    FROM data_block db2
+    left join data_block as need2 on db2.need_id = need2.id
+    WHERE db2.need_id = db.id
+    group by db2.need_id) reveals_names
 
     from data_block db
     left join info as info1 on db.info1 = info1.id
@@ -70,7 +70,7 @@ class Model {
     left join tag as tg3 on db.tag3 = tg3.id
     left join translation as trans on db.id = trans.id_file
     left join data_block as need on need.id = db.need_id
-    where db.id = :id
+    where binary db.id = :id or db.`name` = :id
     and (lang = :lang or lang is null)";
 
     private $sql_blocks_table = "SELECT
@@ -85,6 +85,9 @@ class Model {
 	m.col
 	FROM data_block m
 	ORDER BY m.site DESC, m.level desc, m.row desc, m.col asc";
+
+    private $sql_tag_id_by_name = "SELECT tag.id tag_id FROM tag
+    WHERE tag.`value` = :tag_name limit 1";
 
     private $sql_blocks_by_tag = "SELECT
     db.id, name, info1, info2, info3, info4, 
@@ -201,6 +204,14 @@ class Model {
             );
         }
         return $content;
+    }
+
+    public function getTagIdByName($tag_name)
+    {
+        $result = $this->db->prepare($this->sql_tag_id_by_name);
+        $result->execute(['tag_name' => $tag_name]);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        return $row['tag_id'];
     }
 
     public function getBlocksByTag($tag)

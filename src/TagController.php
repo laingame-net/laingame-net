@@ -17,7 +17,8 @@ class TagController {
 		$data = $this->model->getBlocksByTag($tag);
 		if($data == false) {
 			$this->view->render('error', null, array(
-			'TITLE'=>'Tags'
+			'TITLE'=>'Tags',
+			'error_message' => 'Tag not found = '.$tag
 			));
 			return;
 		}
