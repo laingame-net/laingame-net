@@ -1,0 +1,3 @@
+[submodule "public_html/media"]
+	path = public_html/media
+	url = git@bitbucket.org:laingame/media.git
