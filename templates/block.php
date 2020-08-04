@@ -1,4 +1,9 @@
 <?php $this->init_page() // we must call this function at the begining of any page ?>
+<script>
+window.onload = function() {
+  document.getElementById("media").volume=0.5;
+}
+</script>
 Available languages: 
 <?php foreach ($langs ?? [] as $val): ?>
   <a href="/block/view/<?=$block['id'].'/'.$val?>"><?=$val?></a>  
@@ -56,7 +61,7 @@ Available languages:
   </div>
 
 <?php if($block['type'] == 2): // video ?>
-  <video width="640" controls="" height="32" >
+  <video id="media" width="640" controls="" height="32" >
     <source src="/media/<?=$block['name']?>.mp4" type="video/mp4">
   </video>
   <div class='table'>
@@ -69,7 +74,7 @@ Available languages:
     </div>
   </div>
 <?php elseif($block['type'] == 3): // audio ?>
-<video width="640" controls=""> <!-- height="32" -->
+<video id="media" width="640" controls=""> <!-- height="32" -->
     <source src="/media/<?=$block['name']?>.mp4" type="video/mp4">
 </video>
 <?php endif // if($block['type'] == 2 ?>
