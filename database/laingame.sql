@@ -222,7 +222,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`host700037_sel1`@`localhost`*/ /*!50003 TRIGGER `insert` AFTER INSERT ON `translation` FOR EACH ROW INSERT INTO `translation_history` SELECT null, 'new', NOW(),  '9999-12-31 23:59:59', `translation`.* FROM `translation` WHERE id = NEW.`id` */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `insert` AFTER INSERT ON `translation` FOR EACH ROW INSERT INTO `translation_history` SELECT null, 'new', NOW(),  '9999-12-31 23:59:59', `translation`.* FROM `translation` WHERE id = NEW.`id` */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -237,7 +237,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`host700037_sel1`@`localhost`*/ /*!50003 TRIGGER `update` AFTER UPDATE ON `translation` FOR EACH ROW IF NEW.subtitles <> OLD.subtitles
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update` AFTER UPDATE ON `translation` FOR EACH ROW IF NEW.subtitles <> OLD.subtitles
 THEN
 UPDATE `translation_history` SET date_end = NOW() WHERE id = NEW.`id` AND date_end = '9999-12-31 23:59:59';
 INSERT INTO `translation_history` SELECT null, 'edit', NOW(), '9999-12-31 23:59:59', `translation`.* FROM `translation` WHERE id = NEW.`id`;
@@ -256,7 +256,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`host700037_sel1`@`localhost`*/ /*!50003 TRIGGER `delete` BEFORE DELETE ON `translation` FOR EACH ROW begin
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `delete` BEFORE DELETE ON `translation` FOR EACH ROW begin
 UPDATE `translation_history` SET date_end = NOW() WHERE id = OLD.`id` AND date_end = '9999-12-31 23:59:59';
 INSERT INTO `translation_history` SELECT null, 'delete', NOW(), NOW(), `translation`.* FROM `translation` WHERE id =  OLD.`id`;
 end */;;
