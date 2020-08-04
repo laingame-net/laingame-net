@@ -93,7 +93,7 @@ Warning! Translation on your language (<?=$lang?>) in not available. Showed Engl
       <th>English (default language)</th>
       <th>If you want to help please fill <?=$lang?> translation and press Submit</th>
     </tr>
-<?php foreach ($block['subtitles'] ?? [] as $line): ?>
+<?php foreach ($block['subtitles'] ?? [] as $key => $line): ?>
     <tr>
       <td style="width:40px"><input type="text" id="actor<?=$key?>" style="width:93%" name="actor[]" value="<?=$line['actor']?>"></td>
       <td style="width:800px"><?=$line['text']?></td>
