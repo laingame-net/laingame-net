@@ -30,8 +30,8 @@ Available languages:
 <?php if(!$block['reveals']): ?>
             nothing
 <?php endif; ?>
-<?php foreach ($block['reveals'] ?? [] as $id => $name): ?>
-            <a href="/block/view/<?=$id."/".$lang?>"><?=$name?></a>
+<?php foreach ($block['reveals'] ?? [] as $rid => $name): ?>
+            <a href="/block/view/<?=$rid."/".$lang?>"><?=$name?></a>
 <?php endforeach; ?>
           </div></div>
 
