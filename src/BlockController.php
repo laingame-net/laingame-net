@@ -120,8 +120,11 @@ class BlockController {
 		#$arr = array_combine($_POST['actor'], $_POST['text']);
 		$to_json = array();
 		foreach($_POST['actor'] as $key => $actor){
+			$key = htmlentities($key);
+			$actor = htmlentities($actor);
+			$text = htmlentities($_POST['text'][$key]);
 			$to_json[$key]['line'] = $key;
-			$to_json[$key]['text'] = $_POST['text'][$key];
+			$to_json[$key]['text'] = $text;
 			$to_json[$key]['actor'] = $actor;
 		}
 		$json = json_encode($to_json);
