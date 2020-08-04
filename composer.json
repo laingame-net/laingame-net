@@ -2,7 +2,8 @@
     "name": "laingame site",
     "description": "http://laingame.net",
     "require": {
-	    "eftec/routeone": "1.14"
+	    "eftec/routeone": "1.14",
+        "phpoffice/phpword": "^0.17.0"
     },
     "autoload": {
         "files": ["src/functions.php"],
