@@ -33,14 +33,14 @@ class BlockController {
 		$data = $this->getBlock($id, $lang);
 		if($data == false) {
 			$this->view->render('error', null, array(
-					'TITLE' => 'Block view',
+					'TITLE' => 'Error',
 					'error_message' => 'Block not found'
 					));
 			return;
 		}
-		$history_list = $this->model->getHistoryList($id, $lang);
+		$history_list = $this->model->getHistory($id, $lang);
 		$this->view->render('block', null, array(
-			'TITLE' => 'Block view',
+			'TITLE' => $data['name'].' Block',
 			'block' => $data,
 			'block_en' => array(),
 			'id' => $id,
@@ -48,7 +48,37 @@ class BlockController {
 			'langs' => $this->model->langs,
 			'history_list' => $history_list
 		));
-    }
+	}
+
+    public function HistoryActionGet($id="", $lang="", $history="")
+    {
+		$data = $this->getBlock($id, $lang);
+		if($data == false) {
+			$this->view->render('error', null, array(
+					'TITLE' => 'Error',
+					'error_message' => 'Block not found'
+					));
+			return;
+		}
+		$history_list = $this->model->getHistory($id, $lang);
+		$subtitres_list = $this->model->getHistorySubtitles($id, $lang, $history);
+
+		$diff = new \FineDiff\Diff(new \FineDiff\Granularity\Character);
+		foreach($data["subtitles"] as $key => $sub)
+		{
+			$data["subtitles"][$key]['text'] = $diff->render($subtitres_list[1]["subtitles"][$key]['text'], $subtitres_list[0]["subtitles"][$key]['text']);
+		}
+
+		$this->view->render('block', null, array(
+			'TITLE' => 'Block history',
+			'block' => $data,
+			'block_en' => array(),
+			'id' => $id,
+			'lang' => $lang,
+			'langs' => $this->model->langs,
+			'history_list' => $history_list
+		));
+	}
 
     public function EditActionGet($id="", $lang="", $event="")
     {

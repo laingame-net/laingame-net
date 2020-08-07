@@ -123,7 +123,7 @@ You can edit this translation <a href="/block/edit/<?=$block['id'].'/'.$lang?>">
 <?php if($history_list):?>
 Previous translation versions: 
 <?php foreach ($history_list ?? [] as $key => $history): ?>
-<a href="/block/history/<?=$history['id_history']?>"
+<a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=($history['user_name'] ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
 <?php endforeach ?>
 <?php endif ?>

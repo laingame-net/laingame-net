@@ -115,8 +115,19 @@ class Model {
 
     private $sql_history_list = "SELECT
     th.id_history,
+    th.date_begin as date,
+    th.edited_by as user_id,
+    us.name as user_name
+    FROM
+    translation_history as th
+    LEFT JOIN `user` as us ON us.id = th.edited_by
+    WHERE change_type = 'edit' and id_block = :block_id and lang = :lang";
+
+    private $sql_history_subtitles = "SELECT
+    th.id_history,
     th.id,
     th.lang,
+    th.subtitles,
     th.change_type,
     th.date_begin as date,
     th.edited_by as user_id,
@@ -127,7 +138,9 @@ class Model {
     translation_history as th
     INNER JOIN data_block as db ON db.id = th.id_block
     LEFT JOIN `user` as us ON us.id = th.edited_by
-    WHERE change_type = 'edit' and id_block = :block_id and lang = :lang";
+    WHERE id_block = :block_id and lang = :lang and id_history <= :id_history
+    ORDER BY id_history DESC
+    LIMIT 2";
 
     private $sql_insert_user = "INSERT INTO laingame.`user`
     (email, name, password, can_edit) VALUES(:email, :name, :password, :can_edit)";
@@ -193,12 +206,25 @@ class Model {
         return $result;
     }
     
-    public function getHistoryList($block_id, $lang)
+    public function getHistory($block_id, $lang)
     {
         $list = $this->db->prepare($this->sql_history_list);
         $list->execute(['block_id'=>$block_id, 'lang'=>$lang]);
-        $result = $list->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+        $results = $list->fetchAll(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
+    public function getHistorySubtitles($block_id, $lang, $id_history)
+    {
+        $list = $this->db->prepare($this->sql_history_subtitles);
+        $list->execute(['block_id'=>$block_id, 'lang'=>$lang, 'id_history'=>$id_history]);
+        $results = $list->fetchAll(PDO::FETCH_ASSOC);
+        foreach($results as $key => $result){
+            if($result['subtitles']) {
+                $results[$key]['subtitles'] = json_decode($result['subtitles'], true);
+            }
+        }
+        return $results;
     }
 
     public function getBlocksTable($site)

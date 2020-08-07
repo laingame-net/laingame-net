@@ -2,7 +2,8 @@
     "name": "laingame site",
     "description": "http://laingame.net",
     "require": {
-	    "eftec/routeone": "1.14"
+	    "eftec/routeone": "1.14",
+        "d4h/finediff": "^1.0"
     },
     "autoload": {
         "files": ["src/functions.php"],

@@ -40,6 +40,17 @@ input {
 .login {
     float: right;
 }
+/* diff */
+del {
+    color: red;
+    background: #fdd;
+    text-decoration: none;
+}
+ins {
+    color: green;
+    background: #dfd;
+    text-decoration: none;
+}
 </style>
 </head>
 <body>
