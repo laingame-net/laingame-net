@@ -38,7 +38,6 @@ class BlockController {
 					));
 			return;
 		}
-		//$site = $this->model->getLangStrings($lang);
 		$history_list = $this->model->getHistoryList($id, $lang);
 		$this->view->render('block', null, array(
 			'TITLE' => 'Block view',
@@ -98,16 +97,13 @@ class BlockController {
 			}
 			$param = array_merge($param, $data);
 		}
-
-		@session_start();
-		session_write_close();// we close the session for writes.
-
 		$this->view->render('block_edit', null, $param);
     }
 
     public function EditActionPost($id="", $lang="", $event="")
     {
-		@session_start();
+		if(!$_SESSION['user'])
+			header("Location: /site/login");
 
 		// check posted data is valid arrays
 		if(!@is_array($_POST['actor']) or !@is_array($_POST['text']) or count($_POST['actor']) != count($_POST['text']))
@@ -128,8 +124,7 @@ class BlockController {
 			$to_json[$key]['actor'] = $actor;
 		}
 		$json = json_encode($to_json);
-		$this->model->updateTranslation($id, $lang, $json);
-		session_write_close();// we close the session for writes.
+		$this->model->updateTranslation($id, $lang, $json, intval($_SESSION['user']['id']));
 		$this->ViewActionGet($id, $lang, '');
 		return;
 

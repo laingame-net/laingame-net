@@ -1,7 +1,9 @@
 <?php
+
 namespace Lain;
 
 use \PDO;
+use \PDOException;
 
 function is_image_present($img_value) {
     return $img_value <> 65535;
@@ -68,23 +70,23 @@ class Model {
     left join tag as tg1 on db.tag1 = tg1.id
     left join tag as tg2 on db.tag2 = tg2.id
     left join tag as tg3 on db.tag3 = tg3.id
-    left join translation as trans on db.id = trans.id_file
+    left join translation as trans on db.id = trans.id_block
     left join data_block as need on need.id = db.need_id
     where db.id = :id
     and (lang = :lang or lang is null)";
 
     private $sql_blocks_table = "SELECT
-        m.id,
-        m.icon,
-        m.name,
-	m.type,
-	m.site,
-        m.level,
-        m.page_pos,
-        m.row,
+    m.id,
+    m.icon,
+    m.name,
+    m.type,
+    m.site,
+    m.level,
+    m.page_pos,
+    m.row,
 	m.col
-	FROM data_block m
-	ORDER BY m.site DESC, m.level desc, m.row desc, m.col asc";
+    FROM data_block m
+    ORDER BY m.site DESC, m.level desc, m.row desc, m.col asc";
 
     private $sql_blocks_by_tag = "SELECT
     db.id, name, info1, info2, info3, info4, 
@@ -105,21 +107,33 @@ class Model {
 
     private $sql_langs = "SELECT site.lang FROM site";
     private $sql_lang_translation = "SELECT site.translation FROM site WHERE lang = :lang";
-    private $sql_update_translation = "INSERT INTO translation (id_file, lang, subtitles) 
-    VALUES (:id, :lang, :sub) 
+    private $sql_update_translation = "INSERT INTO translation (id_block, lang, subtitles, edited_by)
+    VALUES (:id, :lang, :sub, :edited_by)
     ON DUPLICATE KEY
-        UPDATE 
-    subtitles=:sub";
+        UPDATE
+    subtitles=:sub, edited_by=:edited_by";
 
     private $sql_history_list = "SELECT
-    translation_history.id_history,
-    translation_history.id,
-    translation_history.lang,
-    data_block.`name`
+    th.id_history,
+    th.id,
+    th.lang,
+    th.change_type,
+    th.date_begin as date,
+    th.edited_by as user_id,
+    us.name as user_name,
+    db.id as data_block_id,
+    db.name as data_block_name
     FROM
-    translation_history
-    INNER JOIN data_block ON data_block.id = translation_history.id_file
-    WHERE change_type = 'edit' and id_file = :id and lang = :lang";
+    translation_history as th
+    INNER JOIN data_block as db ON db.id = th.id_block
+    LEFT JOIN `user` as us ON us.id = th.edited_by
+    WHERE change_type = 'edit' and id_block = :block_id and lang = :lang";
+
+    private $sql_insert_user = "INSERT INTO laingame.`user`
+    (email, name, password, can_edit) VALUES(:email, :name, :password, :can_edit)";
+
+    private $sql_find_user = "SELECT id, email, name, password, created_at, can_edit
+    FROM laingame.`user` WHERE name=:name LIMIT 1";
 
     private $db;
 
@@ -179,10 +193,10 @@ class Model {
         return $result;
     }
     
-    public function getHistoryList($id, $lang)
+    public function getHistoryList($block_id, $lang)
     {
         $list = $this->db->prepare($this->sql_history_list);
-        $list->execute(['id'=>$id, 'lang'=>$lang]);
+        $list->execute(['block_id'=>$block_id, 'lang'=>$lang]);
         $result = $list->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
@@ -212,10 +226,39 @@ class Model {
         return $result;
     }
 
-    public function updateTranslation($id, $lang, $translation_json)
+    public function updateTranslation($id, $lang, $translation_json, $user_id)
     {
         $result = $this->db->prepare($this->sql_update_translation);
-        $result->execute(['id'=>$id, 'lang'=>$lang, 'sub'=> $translation_json]);
+        $result->execute(['id'=>$id, 'lang'=>$lang, 'sub'=> $translation_json, 'edited_by'=>$user_id]);
     }
 
+    public function registerUser($name, $email, $password)
+    {
+        $result = $this->db->prepare($this->sql_insert_user);
+        try{
+            $ret = $result->execute([
+                'name'=>$name,
+                'email'=>$email,
+                'password'=>password_hash($password, PASSWORD_DEFAULT),
+                'can_edit'=>1]);
+        }catch (PDOException $e){
+            return intval($e->errorInfo[0]);
+        }
+        return $ret ? 0 : 1;
+    }
+
+    public function getUser($username, $password)
+    {
+        $result = $this->db->prepare($this->sql_find_user);
+        try{
+            $res = $result->execute(['name'=>$username]);
+            if($result->rowCount() == 0)
+              return 2;
+            $user_from_db = $result->fetch(PDO::FETCH_ASSOC);
+        }catch (PDOException $e){
+            return intval($e->errorInfo[0]);
+        }
+        $ret = password_verify($password, $user_from_db['password']);
+        return $ret ? $user_from_db : 1;
+    }
 }

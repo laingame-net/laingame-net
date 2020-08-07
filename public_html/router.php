@@ -1,6 +1,8 @@
 <?php
 require '../vendor/autoload.php';
 use \eftec\routeone\RouteOne;
+session_name("session");
+session_start();
 
 $route=new RouteOne('.',null,false);  // null means automatic type
 $route->fetch();
