@@ -146,7 +146,7 @@ class Model {
     (email, name, password, can_edit) VALUES(:email, :name, :password, :can_edit)";
 
     private $sql_find_user = "SELECT id, email, name, password, created_at, can_edit
-    FROM laingame.`user` WHERE name=:name LIMIT 1";
+    FROM laingame.`user` WHERE LOWER(name)=LOWER(:name) LIMIT 1";
 
     private $db;
 
