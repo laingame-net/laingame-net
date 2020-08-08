@@ -66,7 +66,12 @@ class BlockController {
 		$diff = new \FineDiff\Diff(new \FineDiff\Granularity\Character);
 		foreach($data["subtitles"] as $key => $sub)
 		{
-			$data["subtitles"][$key]['text'] = $diff->render($subtitres_list[1]["subtitles"][$key]['text'], $subtitres_list[0]["subtitles"][$key]['text']);
+			$from_text_utf8 = $subtitres_list[1]["subtitles"][$key]['text'];
+			$to_text_utf8   = $subtitres_list[0]["subtitles"][$key]['text'];
+			$from_text = mb_convert_encoding($from_text_utf8, 'HTML-ENTITIES', 'UTF-8');
+			$to_text = mb_convert_encoding($to_text_utf8, 'HTML-ENTITIES', 'UTF-8');
+			$result = $diff->render($from_text, $to_text);
+			$data["subtitles"][$key]['text'] = mb_convert_encoding($result, 'UTF-8', 'HTML-ENTITIES');
 		}
 
 		$this->view->render('block', null, array(
