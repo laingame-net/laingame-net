@@ -60,7 +60,7 @@ class SiteController
             $ret = $this->model->registerUser($_POST["username"], $_POST["email"], $_POST["password1"]);
             switch($ret){
                 case 0: // All ok
-                    $_SESSION['user'] = $ret;
+                    $_SESSION['user'] = $this->model->getUser($_POST["username"], $_POST["password1"]);;
                     header("Location: /");
                     exit;
                 case 23000:
