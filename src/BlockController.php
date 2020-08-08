@@ -63,15 +63,12 @@ class BlockController {
 		$history_list = $this->model->getHistory($id, $lang);
 		$subtitres_list = $this->model->getHistorySubtitles($id, $lang, $history);
 
-		$diff = new \FineDiff\Diff(new \FineDiff\Granularity\Character);
+		require 'simplediff.php';
 		foreach($data["subtitles"] as $key => $sub)
 		{
 			$from_text_utf8 = $subtitres_list[1]["subtitles"][$key]['text'];
 			$to_text_utf8   = $subtitres_list[0]["subtitles"][$key]['text'];
-			$from_text = mb_convert_encoding($from_text_utf8, 'HTML-ENTITIES', 'UTF-8');
-			$to_text = mb_convert_encoding($to_text_utf8, 'HTML-ENTITIES', 'UTF-8');
-			$result = $diff->render($from_text, $to_text);
-			$data["subtitles"][$key]['text'] = mb_convert_encoding($result, 'UTF-8', 'HTML-ENTITIES');
+			$data["subtitles"][$key]['text'] = htmlDiff($from_text_utf8, $to_text_utf8);
 		}
 
 		$this->view->render('block', null, array(
