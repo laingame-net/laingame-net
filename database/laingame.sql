@@ -2937,7 +2937,7 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `password` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `can_edit` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_EMAIL` (`email`),
@@ -2965,4 +2965,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-09  0:05:48
+-- Dump completed on 2020-08-09 19:07:46
