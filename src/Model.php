@@ -145,8 +145,26 @@ class Model {
     private $sql_insert_user = "INSERT INTO laingame.`user`
     (email, name, password, can_edit) VALUES(:email, :name, :password, :can_edit)";
 
-    private $sql_find_user = "SELECT id, email, name, password, created_at, can_edit
+    private $sql_find_user = "SELECT id, email, name, password, created_at, can_edit, warn_cookie_stolen
     FROM laingame.`user` WHERE LOWER(name)=LOWER(:name) LIMIT 1";
+
+    private $sql_warn_cookie_stolen = "UPDATE laingame.`user` SET warn_cookie_stolen=b'1' WHERE id=:id_user";
+
+    private $sql_select_session = "SELECT us.id, us.email, us.name, us.created_at, us.can_edit, us.warn_cookie_stolen,
+    se.series, se.token, se.created, se.expired, se.last_used
+    FROM laingame.`user` as us
+    INNER JOIN `session` as se ON se.id_user = us.id
+    WHERE se.series = LOWER(:series)";
+
+    private $sql_insert_session = "INSERT INTO laingame.`session`
+    (id_user, series, token, created, last_used, expired )
+    VALUES(:id_user, :series, :token, UTC_TIMESTAMP(), UTC_TIMESTAMP(), DATE_ADD( UTC_TIMESTAMP(), INTERVAL 60 DAY) )";
+
+    private $sql_update_session = "UPDATE laingame.`session` SET token=:token WHERE series=:series";
+
+    private $sql_delete_sessions = "DELETE FROM laingame.`session` WHERE series=:series";
+
+    private $sql_delete_all_user_sessions = "DELETE FROM laingame.`session` WHERE id_user=:id_user";
 
     private $db;
 
@@ -261,16 +279,14 @@ class Model {
     public function registerUser($name, $email, $password)
     {
         $result = $this->db->prepare($this->sql_insert_user);
-        try{
-            $ret = $result->execute([
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $ret = $result->execute([
                 'name'=>$name,
                 'email'=>$email,
-                'password'=>password_hash($password, PASSWORD_DEFAULT),
+                'password'=>$hash,
                 'can_edit'=>1]);
-        }catch (PDOException $e){
-            return intval($e->errorInfo[0]);
-        }
-        return $ret ? 0 : 1;
+        $lid = $this->db->lastInsertId('id');
+        return $lid;
     }
 
     public function getUser($username, $password)
@@ -285,6 +301,57 @@ class Model {
             return intval($e->errorInfo[0]);
         }
         $ret = password_verify($password, $user_from_db['password']);
+        unset($user_from_db['password']);
         return $ret ? $user_from_db : 1;
+    }
+
+    public function warnUser($id_user)
+    {
+        $result = $this->db->prepare($this->sql_warn_cookie_stolen);
+        $result->execute(['id_user'=>$id_user]);
+    }
+
+    public function newSession($id_user, $series, $token)
+    {
+        $result = $this->db->prepare($this->sql_insert_session);
+        $result->execute(['id_user'=>$id_user, 'series' =>  $series, 'token'=>$token]);
+        //return $this->db->lastInsertId('series');
+    }
+
+    public function setSessionToken($series, $token)
+    {
+        $result = $this->db->prepare($this->sql_update_session);
+        try{
+            $ret = $result->execute(['series'=>$series, 'token'=>$token]);
+            //echo($series);
+        }catch (PDOException $e){
+            return intval($e->errorInfo[0]);
+        }
+        return ($result->rowCount() > 0) ? 0 : 1;
+    }
+
+    public function getSession($series)
+    {
+        $result = $this->db->prepare($this->sql_select_session);
+        try{
+          $session = $result->execute(['series' => $series]);
+          if($result->rowCount() == 0)
+            return 2;
+          $session_from_db = $result->fetch(PDO::FETCH_ASSOC);
+        }catch (PDOException $e){
+            return intval($e->errorInfo[0]);
+        }
+        return $session_from_db;
+    }
+    public function delSession($series)
+    {
+        $result = $this->db->prepare($this->sql_delete_sessions);
+        $result->execute(['series' => $series]);
+    }
+
+    public function delAllSession($id_user)
+    {
+        $result = $this->db->prepare($this->sql_delete_all_user_sessions);
+        $result->execute(['id_user' =>  $id_user]);
     }
 }

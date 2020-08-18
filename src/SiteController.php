@@ -6,17 +6,77 @@ use Lain\View;
 
 class SiteController
 {
-
-    public function __construct()
+    public function __construct($model = null)
     {
-        $this->model = new Model();
+        $this->model = ($model) ?: $GLOBALS['model'];
         $this->view = new View("../templates");
+    }
+
+	private function GenerateToken($length = 20)
+    {
+        return random_bytes($length);
+    }
+
+	public function GenerateLoginCookie($id_user)
+	{
+        $cookie_expiration_time = time()+60*60*24*60;
+        $series = '';
+        do{
+            $series = bin2hex( SiteController::GenerateToken(6) );
+        }
+        while( $this->model->getSession( $series ) != 2 ); // avoid collisions
+        $token  = hash("sha256", SiteController::GenerateToken(32));
+        try{
+            $session_id = $this->model->newSession($id_user, $series, $token);
+        }catch (\PDOException $e){
+            return false;
+        }
+        setcookie("login", $series."-".$token, $cookie_expiration_time, "/");
+        return $this->model->getSession( $series );
+    }
+
+	public function UpdateLoginCookie($series)
+	{
+        $cookie_expiration_time = time()+60*60*24*60;
+        $token = hash("sha256", SiteController::GenerateToken(32));
+        $this->model->setSessionToken($series, $token);
+        setcookie("login", $series."-".$token, $cookie_expiration_time, "/");
+        return $token;
+    }
+
+    public function CookieLogin()
+	{
+        if(!isset($_COOKIE["login"]))
+          return;
+
+        $_COOKIE["login"] = preg_replace('/[^a-z0-9-]/', '', strtolower($_COOKIE["login"]));
+        list($series, $token) = explode("-", $_COOKIE["login"], 2);
+        $series = substr($series, 0, 12);
+        $session = $this->model->getSession( $series );
+
+        if(!is_int($session))
+        {
+            if($session['token'] === $token)
+            {
+                $token = $this->UpdateLoginCookie($series);
+                $session['token'] = $token;
+                $_SESSION['user'] = $session;
+            }
+            else
+            {
+                $this->model->delAllSession($session['id']);
+                $this->model->warnUser($session['id']);
+            }
+        }
+        else
+        {
+            $this->logout($series);
+        }
     }
 
     public function indexActionGet($id = "", $lang = "", $event = "")
     {
         header("Location: /site/login");
-        exit();
     }
 
     public function loginActionGet($id = "", $lang = "", $event = "")
@@ -56,28 +116,39 @@ class SiteController
         if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL))
             $error .= "Email is not valid<br>\n";
 
-        if(!$error){
-            $ret = $this->model->registerUser($_POST["username"], $_POST["email"], $_POST["password1"]);
-            switch($ret){
-                case 0: // All ok
-                    $_SESSION['user'] = $this->model->getUser($_POST["username"], $_POST["password1"]);;
-                    header("Location: /");
-                    exit;
-                case 23000:
-                    $error = "This username or email already exists in database! Try to <a href='/site/login'>login?</a><br>\n";
-                    break;
-                default:
-                    $error = "SQLSTATE = ".$ret;
-            }
-        }
+        $remember_me = isset($_POST['remember']);
 
-        $this->view->render('register', null, array(
-            'TITLE' => 'Register',
-            'lang' => $lang,
-            'error' => $error,
-            'last_post' => $_POST,
-            'langs' => $this->model->langs,
-        ));
+        if(!$error){
+            try{
+                $user_id = $this->model->registerUser($_POST["username"], $_POST["email"], $_POST["password1"]);
+            }catch (\PDOException $e){
+                $err = intval($e->errorInfo[0]);
+                switch($err){
+                    case 23000:
+                        $error = "This username or email already exists in database! Try to <a href='/site/login'>login?</a><br>\n";
+                        break;
+                    default:
+                        $error = "SQLSTATE = ".$err;
+                }
+                $this->view->render('register', null, array(
+                    'TITLE' => 'Register',
+                    'lang' => $lang,
+                    'error' => $error,
+                    'last_post' => $_POST,
+                    'langs' => $this->model->langs,
+                ));
+                exit;
+            }
+
+            if(!$remember_me)
+                $_SESSION['user'] = $this->model->getUser($_POST["username"], $_POST["password1"]);
+            else{
+                $series = $this->GenerateLoginCookie($user_id);
+                $_SESSION['user'] = $series;
+            }
+            header("Location: /");
+            exit;
+        }
     }
 
     public function loginActionPost($id = "", $lang = "", $event = "")
@@ -91,6 +162,8 @@ class SiteController
 
         foreach($_POST as $key => $value)
             $_POST[$key] = htmlentities($value);
+
+        $remember_me = isset($_POST['remember']);
 
         $ret = $this->model->getUser($_POST["username"], $_POST["password"]);
         if(is_int($ret))
@@ -117,15 +190,29 @@ class SiteController
         else{ // All ok
             $error = false;
             $_SESSION['user'] = $ret;
-            unset($_SESSION['password']); // just in case :)
+            if($remember_me){
+                $series = $this->GenerateLoginCookie($ret['id']);
+                $_SESSION['user'] = $series;
+            }
             header("Location: /");
-            exit;
         }
+    }
+
+    private function logout($series = null)
+    {
+        if(!is_null($series)){
+            try{
+                $this->model->delSession($series);
+            }catch (\Exception $e){}
+        }
+        setcookie("login", null, -1, '/');
+        unset($_COOKIE["login"]);
+        unset($_SESSION["user"]);
     }
 
     public function logoutActionGet($id = "", $lang = "", $event = "")
     {
-        unset($_SESSION["user"]);
+        $this->logout($_SESSION["user"]['series']);
         header("Location: /site/login");
     }
 }

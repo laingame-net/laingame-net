@@ -119,7 +119,6 @@ You can edit this translation <a href="/block/edit/<?=$block['id'].'/'.$lang?>">
   </tr>
 <?php endforeach ?>
 </table>
-
 <?php if($history_list):?>
 Previous translation versions: 
 <?php foreach ($history_list ?? [] as $key => $history): ?>

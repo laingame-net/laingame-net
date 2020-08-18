@@ -1,8 +1,16 @@
 <?php
 require '../vendor/autoload.php';
-use \eftec\routeone\RouteOne;
+
 session_name("session");
 session_start();
+
+use \eftec\routeone\RouteOne;
+use \Lain\Model;
+use \Lain\SiteController;
+
+$model = new Model();
+$site = new SiteController($model);
+$site->CookieLogin();
 
 $route=new RouteOne('.',null,false);  // null means automatic type
 $route->fetch();
