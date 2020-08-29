@@ -67,8 +67,6 @@ class SiteController
                     $token = $this->UpdateLoginCookie($series, $session->expired);
                     $session->token = $token;
                     $_SESSION['user'] = $session;
-                    var_dump($session->token);
-                    var_dump($token);
                 }
                 else // login cookie expired and must be deleted
                 {
