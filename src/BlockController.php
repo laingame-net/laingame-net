@@ -156,7 +156,7 @@ class BlockController {
 			$to_json[$key]['actor'] = $actor;
 		}
 		$json = json_encode($to_json);
-		$this->model->updateTranslation($id, $lang, $json, intval($_SESSION['user']['id']));
+		$this->model->updateTranslation($id, $lang, $json, intval($_SESSION['user']->id));
 		$this->ViewActionGet($id, $lang, '');
 		return;
 
