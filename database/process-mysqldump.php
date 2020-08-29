@@ -3,7 +3,7 @@
 // http://blog.lavoie.sl/2014/06/split-mysqldump-extended-inserts.html
 // https://gist.github.com/colinmollenhour/cf23b0f7e955267ed1107c9edb07f7c2
 while (false !== ($line = fgets_big_buffer())) {
-    if (substr($line, 0, 6) === 'INSERT') {
+    if ((substr($line, 0, 6) === 'INSERT') and (strpos($line, ' VALUES '))) {
         process_line($line);
     } else {
         echo $line;

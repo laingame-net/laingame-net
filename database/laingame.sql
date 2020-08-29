@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.7.31, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.21, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: laingame
 -- ------------------------------------------------------
@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `data_block`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `data_block` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` tinytext CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
@@ -816,7 +816,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `feedback`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `feedback` (
   `time` datetime NOT NULL,
   `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -877,7 +877,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `icon`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `icon` (
   `id` int NOT NULL,
   `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -911,7 +911,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `info` (
   `id` int NOT NULL,
   `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -986,17 +986,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `session`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `session` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `id_user` int(10) unsigned zerofill NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` int unsigned NOT NULL,
   `series` char(12) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   `token` char(64) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expired` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_used` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `last_used` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1014,7 +1014,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `site`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `site` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `lang` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -1041,7 +1041,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tag` (
   `id` int NOT NULL,
   `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -1482,7 +1482,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `translation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `translation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_block` int NOT NULL,
@@ -2180,7 +2180,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -2195,16 +2195,11 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update` AFTER UPDATE ON `translation` FOR EACH ROW IF NEW.subtitles <> OLD.subtitles
-THEN
-UPDATE `translation_history` SET date_end = NOW() WHERE id = NEW.`id` AND date_end = '9999-12-31 23:59:59';
-INSERT INTO `translation_history` SELECT null, 'edit', NOW
-(), '9999-12-31 23:59:59', `translation`.* FROM `translation` WHERE id = NEW.`id`;
-END IF */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update` AFTER UPDATE ON `translation` FOR EACH ROW IF NEW.subtitles <> OLD.subtitles THEN UPDATE `translation_history` SET date_end = NOW() WHERE id = NEW.`id` AND date_end = '9999-12-31 23:59:59'; INSERT INTO `translation_history` SELECT null, 'edit', NOW(), '9999-12-31 23:59:59', `translation`.* FROM `translation` WHERE id = NEW.`id`; END IF */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2215,15 +2210,13 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `delete` BEFORE DELETE ON `translation` FOR EACH ROW begin
 UPDATE `translation_history` SET date_end = NOW() WHERE id = OLD.`id` AND date_end = '9999-12-31 23:59:59';
-INSERT INTO `translation_history` SELECT null, 'delete', NOW
-(), NOW
-(), `translation`.* FROM `translation` WHERE id =  OLD.`id`;
+INSERT INTO `translation_history` SELECT null, 'delete', NOW(), NOW(), `translation`.* FROM `translation` WHERE id =  OLD.`id`;
 end */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -2237,7 +2230,7 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `translation_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `translation_history` (
   `id_history` int NOT NULL AUTO_INCREMENT,
   `change_type` enum('new','edit','delete') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'edit',
@@ -2246,10 +2239,10 @@ CREATE TABLE `translation_history` (
   `id` int NOT NULL,
   `id_block` int NOT NULL,
   `lang` char(2) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
-  `subtitles` json DEFAULT NULL,
+  `subtitles` json NOT NULL,
   `edited_by` int NOT NULL,
   PRIMARY KEY (`id_history`)
-) ENGINE=InnoDB AUTO_INCREMENT=692 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=694 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2959,7 +2952,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
@@ -2971,7 +2964,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_EMAIL` (`email`),
   UNIQUE KEY `user_NAME` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2994,4 +2987,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-19  1:26:26
+-- Dump completed on 2020-08-29 20:53:27
