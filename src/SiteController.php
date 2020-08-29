@@ -19,7 +19,8 @@ class SiteController
 
 	public function GenerateLoginCookie($id_user)
 	{
-        $cookie_expiration_time = time()+60*60*24*60;
+        date_default_timezone_set("UTC");
+        $cookie_expiration_time = new \DateTime("+60 day");
         $series = '';
         do{
             $series = bin2hex( SiteController::GenerateToken(6) );
@@ -27,25 +28,27 @@ class SiteController
         while( $this->model->getSession( $series ) != 2 ); // avoid collisions
         $token  = hash("sha256", SiteController::GenerateToken(32));
         try{
-            $session_id = $this->model->newSession($id_user, $series, $token);
+            $session_id = $this->model->newSession($id_user, $series, $token, $cookie_expiration_time);
         }catch (\PDOException $e){
             return false;
         }
-        setcookie("login", $series."-".$token, $cookie_expiration_time, "/");
+        setcookie("login", $series."-".$token, $cookie_expiration_time->getTimestamp(), "/");
         return $this->model->getSession( $series );
     }
 
-	public function UpdateLoginCookie($series)
+	public function UpdateLoginCookie($series, $expired)
 	{
-        $cookie_expiration_time = time()+60*60*24*60;
         $token = hash("sha256", SiteController::GenerateToken(32));
         $this->model->setSessionToken($series, $token);
-        setcookie("login", $series."-".$token, $cookie_expiration_time, "/");
+        setcookie("login", $series."-".$token, $expired->getTimestamp(), "/");
         return $token;
     }
 
     public function CookieLogin()
 	{
+        if(isset($_SESSION['user']))
+          return;
+
         if(!isset($_COOKIE["login"]))
           return;
 
@@ -53,19 +56,29 @@ class SiteController
         list($series, $token) = explode("-", $_COOKIE["login"], 2);
         $series = substr($series, 0, 12);
         $session = $this->model->getSession( $series );
-
         if(!is_int($session))
         {
-            if($session['token'] === $token)
+            if($session->token === $token)
             {
-                $token = $this->UpdateLoginCookie($series);
-                $session['token'] = $token;
-                $_SESSION['user'] = $session;
+                date_default_timezone_set("UTC");
+                $now = new \DateTime();
+                if($now <= $session->expired)
+                {
+                    $token = $this->UpdateLoginCookie($series, $session->expired);
+                    $session->token = $token;
+                    $_SESSION['user'] = $session;
+                    var_dump($session->token);
+                    var_dump($token);
+                }
+                else // login cookie expired and must be deleted
+                {
+                    $this->logout($series);
+                }
             }
             else
             {
-                $this->model->delAllSession($session['id']);
-                $this->model->warnUser($session['id']);
+                $this->model->delAllSession($session->id);
+                $this->model->warnUser($session->id);
             }
         }
         else
@@ -191,7 +204,7 @@ class SiteController
             $error = false;
             $_SESSION['user'] = $ret;
             if($remember_me){
-                $series = $this->GenerateLoginCookie($ret['id']);
+                $series = $this->GenerateLoginCookie($ret->id);
                 $_SESSION['user'] = $series;
             }
             header("Location: /");
@@ -212,7 +225,7 @@ class SiteController
 
     public function logoutActionGet($id = "", $lang = "", $event = "")
     {
-        $this->logout($_SESSION["user"]['series']);
+        $this->logout($_SESSION["user"]->series);
         header("Location: /site/login");
     }
 }

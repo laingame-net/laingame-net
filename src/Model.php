@@ -4,6 +4,7 @@ namespace Lain;
 
 use \PDO;
 use \PDOException;
+use Lain\User;
 
 function is_image_present($img_value) {
     return $img_value <> 65535;
@@ -157,8 +158,8 @@ class Model {
     WHERE se.series = LOWER(:series)";
 
     private $sql_insert_session = "INSERT INTO laingame.`session`
-    (id_user, series, token, created, last_used, expired )
-    VALUES(:id_user, :series, :token, UTC_TIMESTAMP(), UTC_TIMESTAMP(), DATE_ADD( UTC_TIMESTAMP(), INTERVAL 60 DAY) )";
+    (id_user, series, token, created, expired, last_used )
+    VALUES(:id_user, :series, :token, UTC_TIMESTAMP(), :expired, UTC_TIMESTAMP() )";
 
     private $sql_update_session = "UPDATE laingame.`session` SET token=:token WHERE series=:series";
 
@@ -294,14 +295,15 @@ class Model {
         $result = $this->db->prepare($this->sql_find_user);
         try{
             $res = $result->execute(['name'=>$username]);
+            $result->setFetchMode(PDO::FETCH_CLASS, 'Lain\User');
             if($result->rowCount() == 0)
               return 2;
-            $user_from_db = $result->fetch(PDO::FETCH_ASSOC);
+            $user_from_db = $result->fetch();
         }catch (PDOException $e){
             return intval($e->errorInfo[0]);
         }
-        $ret = password_verify($password, $user_from_db['password']);
-        unset($user_from_db['password']);
+        $ret = password_verify($password, $user_from_db->password);
+        unset($user_from_db->password);
         return $ret ? $user_from_db : 1;
     }
 
@@ -311,11 +313,11 @@ class Model {
         $result->execute(['id_user'=>$id_user]);
     }
 
-    public function newSession($id_user, $series, $token)
+    public function newSession($id_user, $series, $token, $expired)
     {
         $result = $this->db->prepare($this->sql_insert_session);
-        $result->execute(['id_user'=>$id_user, 'series' =>  $series, 'token'=>$token]);
-        //return $this->db->lastInsertId('series');
+        $result->execute([  'id_user'=>$id_user, 'series' =>  $series, 'token'=>$token,
+                            'expired'=>$expired->format("YmdHis")  ]);
     }
 
     public function setSessionToken($series, $token)
@@ -323,7 +325,6 @@ class Model {
         $result = $this->db->prepare($this->sql_update_session);
         try{
             $ret = $result->execute(['series'=>$series, 'token'=>$token]);
-            //echo($series);
         }catch (PDOException $e){
             return intval($e->errorInfo[0]);
         }
@@ -335,9 +336,10 @@ class Model {
         $result = $this->db->prepare($this->sql_select_session);
         try{
           $session = $result->execute(['series' => $series]);
+          $result->setFetchMode(PDO::FETCH_CLASS, 'Lain\User');
           if($result->rowCount() == 0)
             return 2;
-          $session_from_db = $result->fetch(PDO::FETCH_ASSOC);
+          $session_from_db = $result->fetch();
         }catch (PDOException $e){
             return intval($e->errorInfo[0]);
         }

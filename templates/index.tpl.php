@@ -55,7 +55,7 @@ ins {
 </head>
 <body>
 <div class="container">
-<div class="login"><?=($_SESSION['user']) ? 'Logged in as <a href="/site/logout">'.@$_SESSION['user']['name'].'</a>.</br>'
+<div class="login"><?=(@$_SESSION['user']) ? 'Logged in as <a href="/site/logout">'.@$_SESSION['user']->name.'</a>.</br>'
                        : '<a href="/site/login">Login</a> or <a href="/site/register">Register</a></br>'?></div>
 <?=$CONTENT?>
 </div>
