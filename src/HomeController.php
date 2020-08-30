@@ -3,15 +3,16 @@ namespace Lain;
 
 use Lain\View;
 
-class HomeController {
+class HomeController
+{
 
     public function __construct()
     {
-		$this->model = ($model) ?: $GLOBALS['model'];
+        $this->model = ($model) ?: $GLOBALS['model'];
         $this->view = new View("../templates");
     }
 
-    public function indexActionGet($id="", $lang="", $event="")
+    public function indexActionGet($id = "", $lang = "", $event = "")
     {
         $data = $this->model->getBlocksTable(0);
         $this->view->render('index', null, array(
