@@ -1,14 +1,13 @@
 <?php
 namespace Lain;
 
-use Lain\Model;
 use Lain\View;
 
 class BlockController {
 
     public function __construct()
     {
-		$this->model = new Model();
+		$this->model = ($model) ?: $GLOBALS['model'];
 		$this->view = new View("../templates");
     }
 
@@ -21,6 +20,11 @@ class BlockController {
 				$data['failback_to_english'] = true;
 				$data['edit_form'] = true;
 			}
+		}
+		foreach($data['subtitles'] as $key => $sub){
+
+			$data['subtitles'][$key]['text'] = htmlentities($sub['text']);
+			$data['subtitles'][$key]['actor'] = htmlentities($sub['actor']);
 		}
 		return $data;
     }
@@ -66,9 +70,14 @@ class BlockController {
 		require 'simplediff.php';
 		foreach($data["subtitles"] as $key => $sub)
 		{
-			$from_text_utf8 = $subtitres_list[1]["subtitles"][$key]['text'];
-			$to_text_utf8   = $subtitres_list[0]["subtitles"][$key]['text'];
-			$data["subtitles"][$key]['text'] = htmlDiff($from_text_utf8, $to_text_utf8);
+			// text
+			$from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['text']);
+			$to   = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['text']);
+			$data["subtitles"][$key]['text'] = htmlDiff($from, $to);
+			// actor
+			$from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['actor']);
+			$to   = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['actor']);
+			$data["subtitles"][$key]['actor'] = htmlDiff($from, $to);
 		}
 
 		$this->view->render('block', null, array(
@@ -84,8 +93,15 @@ class BlockController {
 
     public function EditActionGet($id="", $lang="", $event="")
     {
+		if(!$_SESSION['user'])
+			header("Location: /site/login");
 
 		$data['block_en'] = $this->model->getBlock($id, 'en'); // get default english translation
+		foreach($data['block_en']['subtitles'] as $key => $sub){
+
+			$data['block_en']['subtitles'][$key]['text'] = htmlentities($sub['text']);
+			$data['block_en']['subtitles'][$key]['actor'] = htmlentities($sub['actor']);
+		}
 		if($data['block_en'] != false) {
 			if(!$data['block_en']['subtitles'])
 			{
@@ -121,6 +137,13 @@ class BlockController {
 			$param['block'] = $data['block_en'];
 		} else {
 			$data['block'] = $this->model->getBlock($id, $lang);
+
+			foreach($data['block']['subtitles'] as $key => $sub){
+
+                $data['block']['subtitles'][$key]['text'] = htmlentities($sub['text']);
+                $data['block']['subtitles'][$key]['actor'] = htmlentities($sub['actor']);
+			}
+
 			if(!$data['block'] or !$data['block']['subtitles']) {
 				$data['block_en_subtitles_empty'] = $data['block_en']['subtitles'];
 				foreach($data['block_en_subtitles_empty'] as $key => $val) {
@@ -137,6 +160,7 @@ class BlockController {
 		if(!$_SESSION['user'])
 			header("Location: /site/login");
 
+
 		// check posted data is valid arrays
 		if(!@is_array($_POST['actor']) or !@is_array($_POST['text']) or count($_POST['actor']) != count($_POST['text']))
 		{
@@ -145,30 +169,14 @@ class BlockController {
 			return;
 		}
 		
-		#$arr = array_combine($_POST['actor'], $_POST['text']);
 		$to_json = array();
 		foreach($_POST['actor'] as $key => $actor){
-			$key = htmlentities($key);
-			$actor = htmlentities($actor);
-			$text = htmlentities($_POST['text'][$key]);
 			$to_json[$key]['line'] = $key;
-			$to_json[$key]['text'] = $text;
 			$to_json[$key]['actor'] = $actor;
+			$to_json[$key]['text'] = $_POST['text'][$key];
 		}
 		$json = json_encode($to_json);
 		$this->model->updateTranslation($id, $lang, $json, intval($_SESSION['user']->id));
 		$this->ViewActionGet($id, $lang, '');
-		return;
-
-		$data = $this->getBlock($id, $lang);
-		try {
-			$this->view->render('block_edit', null, array(
-				'TITLE' => 'sdfsdf sdf',
-				'block' => $data,
-				'lang' => $lang,
-			));
-		} catch (Exception $e) {
-			echo "error found ".$e->getMessage()."<br>".$e->getTraceAsString();
-		}
     }
 }

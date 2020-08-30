@@ -144,14 +144,14 @@ class Model {
     LIMIT 2";
 
     private $sql_insert_user = "INSERT INTO laingame.`user`
-    (email, name, password, can_edit) VALUES(:email, :name, :password, :can_edit)";
+    (email, name, password, registered_at, can_edit) VALUES(:email, :name, :password, :registered_at, :can_edit)";
 
-    private $sql_find_user = "SELECT id, email, name, password, created_at, can_edit, warn_cookie_stolen
+    private $sql_find_user = "SELECT id, email, name, password, registered_at, can_edit, warn_cookie_stolen
     FROM laingame.`user` WHERE LOWER(name)=LOWER(:name) LIMIT 1";
 
     private $sql_warn_cookie_stolen = "UPDATE laingame.`user` SET warn_cookie_stolen=b'1' WHERE id=:id_user";
 
-    private $sql_select_session = "SELECT us.id, us.email, us.name, us.created_at, us.can_edit, us.warn_cookie_stolen,
+    private $sql_select_session = "SELECT us.id, us.email, us.name, us.registered_at, us.can_edit, us.warn_cookie_stolen,
     se.series, se.token, se.created, se.expired, se.last_used
     FROM laingame.`user` as us
     INNER JOIN `session` as se ON se.id_user = us.id
@@ -277,7 +277,7 @@ class Model {
         $result->execute(['id'=>$id, 'lang'=>$lang, 'sub'=> $translation_json, 'edited_by'=>$user_id]);
     }
 
-    public function registerUser($name, $email, $password)
+    public function registerUser($name, $email, $password, $registered_at)
     {
         $result = $this->db->prepare($this->sql_insert_user);
         $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -285,26 +285,20 @@ class Model {
                 'name'=>$name,
                 'email'=>$email,
                 'password'=>$hash,
+                'registered_at'=>$registered_at->format("YmdHis"),
                 'can_edit'=>1]);
-        $lid = $this->db->lastInsertId('id');
-        return $lid;
+        return $this->db->lastInsertId('id');
     }
 
-    public function getUser($username, $password)
+    public function getUser($username)
     {
         $result = $this->db->prepare($this->sql_find_user);
-        try{
-            $res = $result->execute(['name'=>$username]);
-            $result->setFetchMode(PDO::FETCH_CLASS, 'Lain\User');
-            if($result->rowCount() == 0)
-              return 2;
-            $user_from_db = $result->fetch();
-        }catch (PDOException $e){
-            return intval($e->errorInfo[0]);
-        }
-        $ret = password_verify($password, $user_from_db->password);
-        unset($user_from_db->password);
-        return $ret ? $user_from_db : 1;
+        $res = $result->execute(['name'=>$username]);
+        $result->setFetchMode(PDO::FETCH_CLASS, 'Lain\User');
+        #if($result->rowCount() == 0)
+        #    return 2;
+        $user_from_db = $result->fetch();
+        return $user_from_db;
     }
 
     public function warnUser($id_user)

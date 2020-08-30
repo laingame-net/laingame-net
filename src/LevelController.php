@@ -1,14 +1,13 @@
 <?php
 namespace Lain;
 
-use Lain\Model;
 use Lain\View;
 
 class LevelController {
 
     public function __construct()
     {
-        $this->model = new Model();
+		$this->model = ($model) ?: $GLOBALS['model'];
         $this->view = new View("../templates");
     }
 

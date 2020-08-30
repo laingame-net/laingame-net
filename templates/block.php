@@ -82,7 +82,7 @@ Available languages:
 <?php if( $block['subtitles'] ): ?>
 
 <?php if( isset($block['failback_to_english']) ): ?>
-Warning! Translation on your language (<?=$lang?>) in not available. Showed English instead.<br>You can help by providing translation on your language below.
+Warning! Translation on your language (<?=$lang?>) is not available. Showed English instead.<br>You can help by providing translation on your language below.
 <?php endif ?>
 
 <?php if( isset($block['edit_form']) ): ?>
@@ -123,7 +123,7 @@ You can edit this translation <a href="/block/edit/<?=$block['id'].'/'.$lang?>">
 Previous translation versions: 
 <?php foreach ($history_list ?? [] as $key => $history): ?>
 <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
-title="Edited by: <?=($history['user_name'] ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
+title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
 <?php endforeach ?>
 <?php endif ?>
 
