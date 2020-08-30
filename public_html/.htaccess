@@ -3,7 +3,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_URI} !-f
 RewriteCond %{REQUEST_URI} !-d
 RewriteCond %{REQUEST_URI} !-L
-RewriteRule ^favicon\.ico$ /images/icons/favicon.ico [L]
+RewriteRule ^favicon.ico$ /media/icons/favicon.ico [L]
 RewriteRule ^(media|test|css|vendors|vendor|js|img|upload)($|/) - [L]
 RewriteRule ^(.*)$ router.php?req=$1 [L,QSA]
 </IfModule>
