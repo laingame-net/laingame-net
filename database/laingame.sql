@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `data_block`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `data_block` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` tinytext CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
+  `name` char(8) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   `info1` int DEFAULT NULL,
   `info2` int DEFAULT NULL,
   `info3` int DEFAULT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `data_block` (
   `type` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `lower_name_idx` ((lower(`name`)))
-) ENGINE=InnoDB AUTO_INCREMENT=833 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=833 DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -879,10 +879,10 @@ DROP TABLE IF EXISTS `icon`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `icon` (
-  `id` int NOT NULL,
-  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` tinyint unsigned NOT NULL,
+  `value` char(16) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1046,7 +1046,7 @@ CREATE TABLE `tag` (
   `id` smallint unsigned NOT NULL,
   `value` char(16) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
