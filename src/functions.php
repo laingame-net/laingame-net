@@ -1,6 +1,6 @@
 <?php
-if(!function_exists('_e')){
- function _e($string) {
+if(!function_exists('_')){
+ function _($string) {
    echo htmlspecialchars($string);
  }
 }
