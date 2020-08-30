@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `data_block`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `data_block` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` smallint unsigned NOT NULL,
   `name` char(8) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   `info1` int DEFAULT NULL,
   `info2` int DEFAULT NULL,
@@ -48,8 +48,8 @@ CREATE TABLE `data_block` (
   `need_id` int DEFAULT NULL,
   `type` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `lower_name_idx` ((lower(`name`)))
-) ENGINE=InnoDB AUTO_INCREMENT=833 DEFAULT CHARSET=ascii;
+  KEY `data_block_name_IDX` ((lower(`name`))) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -916,7 +916,7 @@ CREATE TABLE `info` (
   `id` tinyint unsigned NOT NULL,
   `value` char(16) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2233,7 +2233,7 @@ DROP TABLE IF EXISTS `translation_history`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `translation_history` (
   `id_history` int NOT NULL AUTO_INCREMENT,
-  `change_type` enum('new','edit','delete') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'edit',
+  `change_type` enum('new','edit','delete') CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT 'edit',
   `date_begin` datetime NOT NULL,
   `date_end` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   `id` int NOT NULL,
@@ -2957,14 +2957,14 @@ CREATE TABLE `user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
   `registered_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `can_edit` tinyint(1) NOT NULL DEFAULT '1',
-  `warn_cookie_stolen` tinyint(1) NOT NULL DEFAULT '0',
+  `can_edit` tinyint unsigned NOT NULL DEFAULT '1',
+  `warn_cookie_stolen` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_EMAIL` (`email`),
   UNIQUE KEY `user_NAME` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2987,4 +2987,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-30  2:52:28
+-- Dump completed on 2020-08-30 17:04:55
