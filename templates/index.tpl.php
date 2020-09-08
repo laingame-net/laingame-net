@@ -4,7 +4,7 @@
 <title><?=$TITLE?></title>
 <style>
 html, body{
-    width:80%;
+    width:100%;
     height:100%;
     margin:0;
     padding:0;
@@ -12,8 +12,11 @@ html, body{
 table,tr,td,th {
     border: 1px solid black;
 }
-input {
-    width:100%;
+.h50{
+    height: 50px;
+}
+.h39{
+    height: 39px;
 }
 .table {
     display:table;
@@ -33,12 +36,17 @@ input {
 .level {
     text-align: center;
 }
+.block {
+   width: 640px;
+}
 .container {
    width: 640px;
-   /* height: 200; */
 }
 .login {
     float: right;
+}
+.btn {
+    background: #32a852;
 }
 /* diff */
 del {
@@ -51,12 +59,31 @@ ins {
     background: #dfd;
     text-decoration: none;
 }
+textarea { 
+    resize: both;
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+    font-size: 15px;
+    background: #fff5de;
+}
+input{
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+}
+form{
+    display: grid;
+}
 </style>
+<script src="/js/autosize.min.js"></script>
 </head>
 <body>
 <div class="container">
 <div class="login"><?=(@$_SESSION['user']) ? 'Logged in as <a href="/site/logout">'.htmlspecialchars($_SESSION['user']->name).'</a>.</br>'
                        : '<a href="/site/login">Login</a> or <a href="/site/register">Register</a></br>'?></div>
-<?=$CONTENT?>
 </div>
+<?=$CONTENT?>
 </body>

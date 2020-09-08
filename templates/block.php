@@ -4,23 +4,25 @@ window.onload = function() {
   document.getElementById("media").volume=0.5;
 }
 </script>
-Available languages: 
+<!-- Available languages: 
 <?php foreach ($langs ?? [] as $val): ?>
   <a href="/block/view/<?=$block['id'].'/'.$val?>"><?=$val?></a>  
 <?php endforeach; ?>
-  <a href="/lang/add/">add</a>  
+  <a href="/lang/add/">add</a> 
+  -->
+<div class="container">
   <div class='table'>
     <div class='row'>
       <div class='cell'>
         <div class='table'>
           <div class='row'><div class='cell'>ID:</div><div class='cell'>
-            <a href="/block/view/<?=($block['id']-1).'/'.$lang?>">&lt;-</a>
-            <a href="/block/view/<?=$block['id'].'/'.$lang?>"><?=$block['name']?></a>
-            <a href="/block/view/<?=($block['id']+1).'/'.$lang?>">-&gt;</a>
+            <a href="/block/edit/<?=($block['id']-1).'/'.$lang?>">&lt;-</a>
+            <a href="/block/edit/<?=$block['id'].'/'.$lang?>"><?=$block['name']?></a>
+            <a href="/block/edit/<?=($block['id']+1).'/'.$lang?>">-&gt;</a>
           </div></div>
 
           <div class='row'><div class='cell'>Location:</div><div class='cell'>
-            <a href="/#!<?=$block['level']?>"><?="site ".$block['site']." , level ".$block['level'].", #".$block['page_pos']?></a>
+            <a href="<?='/#site'.$block['site'].'level'.$block['level']?>"><?="site ".$block['site']." , level ".$block['level'].", #".$block['page_pos']?></a>
           </div></div>
 
           <div class='row'><div class='cell'>Misc:</div><div class='cell'>
@@ -28,7 +30,7 @@ Available languages:
           </div></div>
 
           <div class='row'><div class='cell'>Depends on:</div><div class='cell'>
-            <?= ( !empty($block['need_name']) ) ? '<a href="/block/view/'.$block['need_id'].'/'.$lang.'">'.$block['need_name']."</a>\n" : "nothing\n"; ?>
+            <?= ( !empty($block['need_name']) ) ? '<a href="/block/edit/'.$block['need_id'].'/'.$lang.'">'.$block['need_name']."</a>\n" : "nothing\n"; ?>
           </div></div>
 
           <div class='row'><div class='cell'>Reveals:</div><div class='cell'>
@@ -36,7 +38,7 @@ Available languages:
             nothing
 <?php endif; ?>
 <?php foreach ($block['reveals'] ?? [] as $rid => $name): ?>
-            <a href="/block/view/<?=$rid."/".$lang?>"><?=$name?></a>
+            <a href="/block/edit/<?=$rid."/".$lang?>"><?=$name?></a>
 <?php endforeach; ?>
           </div></div>
 
@@ -105,7 +107,7 @@ Warning! Translation on your language (<?=$lang?>) is not available. Showed Engl
 </form>
 
 <?php else: ?>
-You can edit this translation <a href="/block/edit/<?=$block['id'].'/'.$lang?>">here</a>.
+Исправить перевод можно <a href="/block/edit/<?=$block['id'].'/'.$lang?>">тут</a>.
 
 <table>
   <tr>
@@ -120,7 +122,7 @@ You can edit this translation <a href="/block/edit/<?=$block['id'].'/'.$lang?>">
 <?php endforeach ?>
 </table>
 <?php if($history_list):?>
-Previous translation versions: 
+Предыдущие версии перевода:
 <?php foreach ($history_list ?? [] as $key => $history): ?>
 <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
@@ -131,3 +133,4 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
 <?php else: # if( $block['subtitles'] ):?>
 <p>Translation of this file is not required</p>
 <?php endif ?>
+</div>
