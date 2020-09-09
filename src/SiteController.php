@@ -20,23 +20,25 @@ class SiteController
     {
         require '../config.php';
         date_default_timezone_set("UTC");
-        $cookie_expiration_time = new \DateTime("+60 day");
+        $expired = new \DateTime("+60 day");
         $series = '';
         do {
             $series = bin2hex(SiteController::GenerateToken(6));
         } while ($this->model->getSession($series) != 2); // avoid collisions
         $token = hash("sha256", SiteController::GenerateToken(32));
         try {
-            $session_id = $this->model->newSession($id_user, $series, $token, $cookie_expiration_time);
+            $session_id = $this->model->newSession($id_user, $series, $token, $expired);
         } catch (\PDOException $e) {
             return false;
         }
         setcookie("login", $series . "-" . $token, [
-            'expires' => $cookie_expiration_time->getTimestamp(),
+            'expires' => $expired->getTimestamp(),
             'path' => '/',
-            'secure' => $usehttps,
-            'httponly' => true,
-            'samesite' => $samesite]);
+            'domain' => '',
+            'secure' => $https,
+            'httponly' => $httponly,
+            'samesite' => $samesite,
+        ]);
         return $this->model->getSession($series);
     }
 
@@ -48,9 +50,11 @@ class SiteController
         setcookie("login", $series . "-" . $token, [
             'expires' => $expired->getTimestamp(),
             'path' => '/',
-            'secure' => $usehttps,
-            'httponly' => true,
-            'samesite' => $samesite]);
+            'domain' => '',
+            'secure' => $https,
+            'httponly' => $httponly,
+            'samesite' => $samesite,
+        ]);
         return $token;
     }
 

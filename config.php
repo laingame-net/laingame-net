@@ -1,8 +1,14 @@
 <?php
+
+// mysql
 $myhost   = 'mysql:3306';
 $dbname   = 'laingame';
 $username = 'lain';
 $password = 'p4ssp4ss';
-$usehttps = true;
+
+// cookie
+$https    = true;
+$httponly = true;
 $samesite = 'Lax';
+
 ?>
