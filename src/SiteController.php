@@ -18,6 +18,7 @@ class SiteController
 
     public function GenerateLoginCookie($id_user)
     {
+        require '../config.php';
         date_default_timezone_set("UTC");
         $cookie_expiration_time = new \DateTime("+60 day");
         $series = '';
@@ -30,15 +31,26 @@ class SiteController
         } catch (\PDOException $e) {
             return false;
         }
-        setcookie("login", $series . "-" . $token, $cookie_expiration_time->getTimestamp(), "/");
+        setcookie("login", $series . "-" . $token, [
+            'expires' => $cookie_expiration_time->getTimestamp(),
+            'path' => '/',
+            'secure' => $usehttps,
+            'httponly' => true,
+            'samesite' => $samesite]);
         return $this->model->getSession($series);
     }
 
     public function UpdateLoginCookie($series, $expired)
     {
+        require '../config.php';
         $token = hash("sha256", SiteController::GenerateToken(32));
         $this->model->setSessionToken($series, $token);
-        setcookie("login", $series . "-" . $token, $expired->getTimestamp(), "/");
+        setcookie("login", $series . "-" . $token, [
+            'expires' => $expired->getTimestamp(),
+            'path' => '/',
+            'secure' => $usehttps,
+            'httponly' => true,
+            'samesite' => $samesite]);
         return $token;
     }
 
