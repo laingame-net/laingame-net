@@ -78,6 +78,10 @@ class BlockController
             $from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['actor']);
             $to = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['actor']);
             $data["subtitles"][$key]['actor'] = htmlDiff($from, $to);
+            // comment
+            $from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['comment']);
+            $to = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['comment']);
+            $data["subtitles"][$key]['comment'] = htmlDiff($from, $to);
         }
 
         $this->view->render('block', null, array(
@@ -105,14 +109,12 @@ class BlockController
 
 		if( $data['block_ru'] === false)
 		{
-			//var_dump($data['block_ru']);
 			$data['block_ru']['subtitles'] = $data['block_en']['subtitles'];
 			foreach($data['block_ru']['subtitles'] as $key => $value){
 				$data['block_ru']['subtitles'][$key]["text"] = '';
-				//var_dump($value);
+				$data['block_ru']['subtitles'][$key]["comment"] = '';
 			}
 		}
-		//exit;
 
         $this->view->render('block_edit', null, array(
 			'TITLE' => $data['name'] . ' Block',
@@ -142,7 +144,8 @@ class BlockController
             $to_json[$key]['line'] = $key;
             $to_json[$key]['actor'] = $actor;
             $to_json[$key]['text'] = $_POST['text'][$key];
-        }
+            $to_json[$key]['comment'] = $_POST['comment'][$key];
+		}
 		$json = json_encode($to_json);
 
 		try{
@@ -155,6 +158,6 @@ class BlockController
 				'langs' => $this->model->langs,
 			));
 		}
-        $this->EditActionGet($id, $lang);
+        $this->EditActionGet($id, 'ru');
     }
 }

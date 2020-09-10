@@ -113,11 +113,13 @@ Warning! Translation on your language (<?=$lang?>) is not available. Showed Engl
   <tr>
     <th>Actor</th>
     <th>Text</th>
+    <th>Comment</th>
   </tr>
 <?php foreach ($block['subtitles'] ?? [] as $line): ?>
   <tr>
     <td><?=$line['actor']?></td>
     <td><?=$line['text']?></td>
+    <td><?=$line['comment']?></td>
   </tr>
 <?php endforeach ?>
 </table>

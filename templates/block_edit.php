@@ -93,30 +93,32 @@ window.onload = function() {
 
         <table style="border:0">
           <tr>
-          <td style="width:20%"><input type="submit" class="btn" value="Сохранить" /></td>
-            <td><?php if($history_list):?>
-Предыдущие версии перевода: 
+            <td style="width:16%"><input type="submit" class="btn" value="Сохранить" /></td>
+            <td style="width:24%"><?php if($history_list):?>
+Предыдущие версии перевода:<br>
 <?php foreach ($history_list ?? [] as $key => $history): ?>
   <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
 <?php endforeach ?>
 <?php endif ?></td>
-            <td style="width:20%"></td>
+            <td style="width:60%"></td>
           </tr>
         </table>
         <br>
 
         <table>
         <tr>
-          <th>Актер</th>
-          <th style="width:50%">Русский фан перевод</th>
-          <th>Английский фан перевод</th>
+          <th style="width:15%">Актер</th>
+          <th style="width:30%">Русский фан перевод</th>
+          <th style="width:25%">Английский фан перевод</th>
+          <th style="width:30%">Комментарий</th>
         </tr>
 <?php foreach ($block['block_ru']['subtitles'] ?? [] as $key => $line): ?>
         <tr>
-          <td><textarea type="text" id="actor<?=$key?>" name="actor[]" value=""><?=$line['actor']?></textarea></td>
-          <td><textarea type="text" id="text<?=$key?>" name="text[]" value=""><?=$line['text']?></textarea></td>
+          <td><textarea type="text" id="actor<?=$key?>" name="actor[]"><?=$line['actor']?></textarea></td>
+          <td><textarea type="text" id="text<?=$key?>" name="text[]"><?=$line['text']?></textarea></td>
           <td><?=$block['block_en']['subtitles'][$key]['text']?></td>
+          <td><textarea type="text" id="comment<?=$key?>" name="comment[]"><?=$line['comment']?></textarea></td>
         </tr>
 <?php endforeach ?>
         </table>
@@ -125,7 +127,7 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
           <tr>
             <td style="width:20%"><input type="submit" class="btn" value="Сохранить" /></td>
             <td><?php if($history_list):?>
-Предыдущие версии перевода: 
+Предыдущие версии перевода:<br>
 <?php foreach ($history_list ?? [] as $key => $history): ?>
   <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
