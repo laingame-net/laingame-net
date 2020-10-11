@@ -8,14 +8,14 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: backend
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: change dir to backend
-      run: cd ./backend
 
     - name: Validate composer.json and composer.lock
       run: composer validate
