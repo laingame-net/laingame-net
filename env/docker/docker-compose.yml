@@ -10,7 +10,7 @@ services:
       LANG: "C.UTF-8"
     working_dir: /var/www/laingame.net
     volumes:
-      - ../../:/var/www/laingame.net
+      - ../../backend/:/var/www/laingame.net
     depends_on:
       - mysql
 
