@@ -1,0 +1,56 @@
+name: build and publish
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Validate composer.json and composer.lock
+        working-directory: backend
+        run: composer validate
+
+    - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        working-directory: backend
+        with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-php-
+
+    - name: Install dependencies
+        working-directory: backend
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        
+    - name: Build frontend
+        working-directory: frontend
+        run: |
+            npm install
+            npm run prod
+        
+    - name: List output files
+        run: ls
+      
+    #- name: FTP-Deploy-Action
+        #uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        #with:
+            #ftp-server: ftp://ftp.samkirkland.com/
+            #ftp-username: myFTPUsername
+            #ftp-password: ${{ secrets.FTP_PASSWORD }}
+            #local-dir: build # This folder is NOT going to upload by default unless you add it to .git-ftp-include
