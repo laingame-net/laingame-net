@@ -1,5 +1,5 @@
 {
-    "name": "laingame site",
+    "name": "laingame-net/site",
     "description": "http://laingame.net",
     "require": {
         "eftec/routeone": "1.14"
