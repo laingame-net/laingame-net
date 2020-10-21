@@ -44,10 +44,15 @@ jobs:
         
     - name: Add frontend files to distribution
       run: |
+          echo ==== frontend dist ====
           ls frontend/dist
+          echo ==== backend dist ====
           ls backend
+          echo ==== copy FE files ====
           cp frontend/dist/*.js backend/public_html/js/
           cp frontend/dist/*.css backend/public_html/css/
+          echo ==== distribution ====
+          ls -R backend
     
     # https://github.com/marketplace/actions/ftp-action
     - name: FTP-Deploy-Action
