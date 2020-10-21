@@ -54,3 +54,5 @@ jobs:
             #ftp-username: myFTPUsername
             #ftp-password: ${{ secrets.FTP_PASSWORD }}
             #local-dir: build # This folder is NOT going to upload by default unless you add it to .git-ftp-include
+
+    #commit comment
