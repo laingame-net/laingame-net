@@ -42,17 +42,18 @@ jobs:
           npm install
           npm run prod
         
-    - name: List output files
-      run: ls
+    - name: Add frontend files to distribution
+      run: |
+          ls frontend/dist
+          ls backend
+          cp frontend/dist/*.js ../backend/public_html/js/
+          cp frontend/dist/*.css ../backend/public_html/css/
     
-    # TODO: use this:
     # https://github.com/marketplace/actions/ftp-action
-    #- name: FTP-Deploy-Action
-        #uses: SamKirkland/FTP-Deploy-Action@3.1.1
-        #with:
-            #ftp-server: ftp://ftp.samkirkland.com/
-            #ftp-username: myFTPUsername
-            #ftp-password: ${{ secrets.FTP_PASSWORD }}
-            #local-dir: build # This folder is NOT going to upload by default unless you add it to .git-ftp-include
-
-    #commit comment
+    - name: FTP-Deploy-Action
+      uses: SamKirkland/FTP-Deploy-Action@3.1.1
+      with:
+        ftp-server: ${{ secrets.FTP_HOST }}
+        ftp-username: ${{ secrets.FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: backend
