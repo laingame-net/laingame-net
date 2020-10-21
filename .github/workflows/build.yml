@@ -19,8 +19,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v2
-      working-directory: backend
+      uses: actions/cache@v2      
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -31,7 +30,6 @@ jobs:
       working-directory: backend
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
-
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
