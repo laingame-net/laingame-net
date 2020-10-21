@@ -46,8 +46,8 @@ jobs:
       run: |
           ls frontend/dist
           ls backend
-          cp frontend/dist/*.js ../backend/public_html/js/
-          cp frontend/dist/*.css ../backend/public_html/css/
+          cp frontend/dist/*.js backend/public_html/js/
+          cp frontend/dist/*.css backend/public_html/css/
     
     # https://github.com/marketplace/actions/ftp-action
     - name: FTP-Deploy-Action
