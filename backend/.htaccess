@@ -5,7 +5,7 @@ RewriteCond %{REQUEST_URI} !-d
 RewriteCond %{REQUEST_URI} !-L
 # config for hosting
 RewriteRule ^favicon.ico$ /public_html/media/icons/favicon.ico [L]
-RewriteRule ^(media|test|css|vendors|vendor|js|img|upload)($|/public_html/) - [L]
+RewriteRule ^(media|test|css|vendors|vendor|js|img|upload)/(.+) /public_html/$1/$2 [L]
 RewriteRule ^(.*)$ public_html/router.php?req=$1 [L,QSA]
 </IfModule>
 
