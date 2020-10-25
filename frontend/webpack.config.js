@@ -18,7 +18,7 @@ module.exports = (env, options) => {
         },
 
         output: {
-            path: path.resolve(__dirname, 'dist/'),
+            path: path.resolve(__dirname, '../backend/public_html/build'),
             publicPath: '/build/',
             filename: '[name].js',
             library: '[name]'
