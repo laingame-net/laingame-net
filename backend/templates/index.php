@@ -24,7 +24,7 @@
             <?php for ($i = 7; ($i >= 0); $i--): ?>
               <div class='cell'>
               <?php if(isset($row[$i])): ?>
-                <a href="/block/edit/<?=$row[$i]['id'].'/'.$lang?>">
+                <a href="/block/view/<?=$row[$i]['id'].'/'.$lang?>">
                   <img src="/media/icons/<?=$row[$i]['icon']?>">
                   <br>
                   <?=$row[$i]['name']?>

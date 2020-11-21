@@ -78,6 +78,7 @@ form{
     display: grid;
 }
 </style>
+<link rel="stylesheet" href="/build/style.css" />
 <script src="/js/autosize.min.js"></script>
 </head>
 <body>
