@@ -1,0 +1,43 @@
+.level-disk {
+    width: 100%;
+    margin-bottom: -45%;
+    //cursor: pointer;
+    transition: margin .3s ease;
+
+    &--active {
+        margin-bottom: -15%;
+        margin-top: 35%;
+        .level-disk__path {
+            fill: var(--primary-light);
+        }
+    }
+    pointer-events: none;
+
+    @for $i from 1 through 30 {
+        &:nth-child(#{$i}) {
+            z-index: #{30 - $i};
+        }
+    }
+}
+
+.level-disk__svg {
+    pointer-events: none;
+}
+
+.level-disk__link {
+    pointer-events: all;
+}
+
+.level-disk__path {
+    fill: var(--primary);
+    stroke: var(--bg);
+    stroke-width:6.11788368;
+    stroke-linejoin:round;
+    stroke-miterlimit:4;
+    stroke-dasharray:none;
+    stroke-opacity:1;
+    transition: fill .3s ease;
+    &:hover {
+        fill: var(--secondary);
+    }
+}

@@ -1,0 +1,146 @@
+@import "../variables";
+
+.site-pick {
+    display: flex;
+
+    @media #{$mobile} {
+        margin: 0 0 1.5rem;
+    }
+
+    &__display {
+        background: var(--primary-light);
+        color: var(--bg);
+        font-weight: bolder;
+        text-transform: uppercase;
+        font-size: 1rem;
+        padding: 0 .8rem;
+        line-height: 1.5rem;
+        position: relative;
+        margin-right: 1rem;
+
+        &:after {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            left: 100%;
+            height: 0;
+            width: 0;
+            border-left: 1em solid var(--primary-light);
+            border-right: 0;
+            border-top: 0;
+            border-bottom: 1.5em solid transparent;
+        }
+    }
+
+    &__link {
+        color: var(--secondary);
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-size: .8rem;
+        line-height: 1.5rem;
+        position: relative;
+        display: inline-block;
+        padding: 0 1rem;
+        z-index: 1;
+        transition: color .3s ease;
+        user-select: none;
+
+        &:before {
+            content: "";
+            border: 2px solid var(--secondary);
+            outline-offset: -2px;
+            display: block;
+            height: calc(100% - 4px);
+            width: 100%;
+            position: absolute;
+            transform: skewX(-33deg);
+            top: 0;
+            left: 0;
+            z-index: -1;
+            transition: outline-color .3s ease, background-color .3s ease;
+        }
+
+        &:hover {
+            color: var(--secondary-light);
+            &:before {
+                outline-color: var(--secondary-light);
+            }
+        }
+
+        &:active {
+            color: var(--secondary-light);
+            &:before {
+                outline-color: var(--secondary-light);
+                background: var(--secondary);
+            }
+        }
+
+    }
+
+    &__spacer {
+        flex:1;
+    }
+
+    &__settings {
+        display: none;
+        @media #{$mobile} {
+            color: var(--secondary);
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: .8rem;
+            line-height: 1.5rem;
+            position: relative;
+            display: inline-block;
+            z-index: 1;
+            transition: color .3s ease;
+            user-select: none;
+            overflow: hidden;
+            padding-right: .5rem;
+            padding-left: 1.5rem;
+            cursor: pointer;
+
+            &:before {
+                content: "";
+                border: 2px solid var(--secondary);
+                border-right: none;
+                display: block;
+                height: calc(100% - 4px);
+                margin-bottom: -2px;
+                width: 100%;
+                position: absolute;
+                transform: skewX(-33deg);
+                top: 0;
+                left: .5rem;
+                z-index: -1;
+                transition: outline-color .3s ease, background-color .3s ease;
+            }
+            &:after {
+                position: absolute;
+                content: "";
+                display: block;
+                //width: 4rem;
+                height: calc(100% - 4px);
+                margin-bottom: -2px;
+                border-right: 2px solid var(--secondary);
+                border-bottom: 2px solid var(--secondary);
+                border-top: 2px solid var(--secondary);
+                top: 0;
+                right: 0;
+            }
+
+            &:active {
+                color: var(--secondary-light);
+                &:before {
+                    border-color: var(--secondary-light);
+                    background: var(--secondary);
+                }
+                &:after {
+                    border-color: var(--secondary-light);
+                }
+            }
+        }
+
+    }
+}
