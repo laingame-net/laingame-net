@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !-f
+RewriteCond %{REQUEST_URI} !-d
+RewriteCond %{REQUEST_URI} !-L
+# config for hosting
+RewriteRule ^favicon.ico$ /public_html/media/icons/favicon.ico [L]
+RewriteRule ^(media|test|css|vendors|vendor|js|img|upload|build)/(.+) /public_html/$1/$2 [L]
+RewriteRule ^(.*)$ public_html/router.php?req=$1 [L,QSA]
+</IfModule>
+
+# see NGINX config here:
+# env/docker/config/nginx/vhost/laingame.local.conf

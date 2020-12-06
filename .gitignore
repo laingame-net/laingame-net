@@ -1,7 +1,9 @@
 *.swp
-vendor
-composer.lock
-composer.phar
+backend/vendor
+backend/composer.lock
+backend/composer.phar
+backend/public_html/build
 .idea
 node_modules
 env/docker/.env
+*.iml

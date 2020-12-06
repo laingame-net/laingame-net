@@ -15,10 +15,11 @@ class LevelController
     public function ViewActionGet($id = "", $lang = "", $event = "")
     {
         $data = $this->model->getBlocksTable(0);
-        $this->view->render('index', 'index', array(
+        $this->view->render('level', null, array(
             'TITLE' => 'Level',
             'data_blocks' => $data,
             'lang' => $lang,
+            'level_id' => $id,
         ));
     }
 }

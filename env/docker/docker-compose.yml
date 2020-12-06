@@ -10,7 +10,7 @@ services:
       LANG: "C.UTF-8"
     working_dir: /var/www/laingame.net
     volumes:
-      - ../../:/var/www/laingame.net
+      - ../../backend/:/var/www/laingame.net
     depends_on:
       - mysql
 
@@ -58,9 +58,9 @@ services:
     restart: "no"
     environment:
       LANG: "C.UTF-8"
-    working_dir: /var/www/laingame.net
-    volumes_from:
-      - php
+    working_dir: /var/www/laingame.net/frontend
+    volumes:
+      - ../../:/var/www/laingame.net
 
 volumes:
   mysql:

@@ -1,0 +1,31 @@
+@import "variables";
+
+.menu-state:checked ~ .menu {
+    @media #{$mobile} {
+        transform: translateX(0);
+    }
+}
+
+.menu-state:checked ~ .content .mobile-menu{
+    display: block ;
+}
+
+.menu-state:checked ~ .content .mobile-files-list {
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+    @media #{$mobile} {
+        display: none;
+        position: absolute;
+        top: 8.5rem;
+        left: 1.5rem;
+        width: calc(100% - 3rem);
+        z-index: 0;
+    }
+}
+
+.menu-state {
+    display: none;
+}

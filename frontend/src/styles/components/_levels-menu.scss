@@ -1,0 +1,108 @@
+@import "../variables";
+
+.levels__container {
+    height: 100%;
+    position: relative;
+    &:before, &:after {
+        content: "";
+        height: 8rem;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        display: block;
+    }
+
+    &:before {
+        top: 0;
+        background: linear-gradient(to top, rgba(22, 32, 77, 0) 0%, rgba(22, 32, 77, 255) 75%);
+        pointer-events: none;
+        z-index: 31;
+    }
+    &:after {
+        bottom: 0;
+        background: linear-gradient(to bottom, rgba(22, 32, 77, 0) 0%, rgba(22, 32, 77, 255) 75%);
+        pointer-events: none;
+        z-index: 31;
+    }
+
+    @media #{$mobile} {
+        height: auto;
+        overflow: visible;
+    }
+}
+.levels__list {
+    width: 84%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    flex-shrink: 0;
+    overflow-y: scroll;
+    overflow-x: visible;
+    z-index: 1;
+
+    &:before, &:after {
+        content: "";
+
+        width: 100%;
+        display: block;
+        flex-shrink: 0;
+    }
+    &:before {
+        height: 4rem;
+    }
+    &:after {
+        height: 10rem;
+    }
+
+    @include hide-scrolls();
+
+    @media #{$mobile} {
+        margin: 0 auto;
+        &:before {
+            height: 4rem;
+        }
+        &:after {
+            height: 13rem;
+        }
+    }
+}
+.levels__close {
+    display: none;
+    @media #{$mobile} {
+        display: block;
+        position: fixed;
+        right: 2rem;
+        top: 9rem;
+        width: 2rem;
+        height: 2rem;
+        z-index: 32;
+
+        &:before {
+            content: "";
+            display: block;
+            width: .2rem;
+            background: var(--primary);
+            transform: rotate(45deg);
+            transform-origin: center;
+            height: 90%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+        }
+        &:after {
+            content: "";
+            display: block;
+            width: .2rem;
+            background: var(--primary);
+            transform: rotate(-45deg);
+            transform-origin: center;
+            height: 90%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+
+        }
+
+    }
+}

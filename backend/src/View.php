@@ -34,9 +34,15 @@ class View
         $this->template = ($template) ?? $this->template;
         $this->parameters = $parameters ?? [];
         //$this->parameters['site'] = $this->model->getLangStrings();
-        if(is_array($parameters)) extract($parameters);
-        $a = 1;
-        include( $this->templates_path . DIRECTORY_SEPARATOR . $page_name . $this->ext );
+
+        $runner = function($parameters) use ($page_name) {
+            if(is_array($parameters)) extract($parameters);
+            include( $this->templates_path . DIRECTORY_SEPARATOR . $page_name . $this->ext );
+        };
+        $runner($parameters);
+//         if(is_array($parameters)) extract($parameters);
+//         $a = 1;
+//         include( $this->templates_path . DIRECTORY_SEPARATOR . $page_name . $this->ext );
     }
 
     // TODO A large amount of data could slow your app down with this approach because the str_replace is inefficient.

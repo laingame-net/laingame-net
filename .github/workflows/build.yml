@@ -1,0 +1,74 @@
+name: build and publish
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP with pecl extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+        tools: composer:v2
+
+    - name: Validate composer.json and composer.lock
+      working-directory: backend
+      run: composer validate
+
+
+    # cache disabled because of FUCK OFF!!!!!111 
+    
+    #- name: Cache Composer packages
+    #  working-directory: backend
+    #  id: composer-cache
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: vendor
+    #    key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+    #    restore-keys: |
+    #        ${{ runner.os }}-php-
+
+    - name: Install PHP dependencies    
+      working-directory: backend
+      #if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        
+    - name: Build frontend
+      working-directory: frontend
+      run: |
+          npm install
+          npm run prod
+        
+    - name: Add frontend files to distribution
+      run: |
+          echo ==== frontend dist ====
+          ls frontend/dist
+          echo ==== backend dist ====
+          ls backend
+          echo ==== copy FE files ====
+          cp frontend/dist/*.js backend/public_html/js/
+          cp frontend/dist/*.css backend/public_html/css/
+          echo ==== distribution ====
+          ls -R backend
+    
+    # https://github.com/marketplace/actions/ftp-action
+    - name: FTP-Deploy-Action
+      uses: sebastianpopp/ftp-action@releases/v2
+      with:
+        host: ${{ secrets.FTP_HOST }}
+        user: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        localDir: backend

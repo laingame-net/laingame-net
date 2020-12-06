@@ -1,0 +1,43 @@
+@import "variables.scss";
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden !important;
+    font-family: JetBrainsMono, sans-serif;
+}
+
+html {
+    font-size: 16px;
+
+    @media #{$mobile} {
+        font-size: 14px;
+    }
+}
+
+body {
+}
+
+:root {
+    --bg: #16204d;
+    --primary: #344ab3;
+    --primary-light: #7d94ff;
+    --secondary: #ffb84e;
+    --secondary-light: #ffde7d;
+    --mobile-viewport-height: 100vh
+}
+
+::-webkit-scrollbar {
+    width: .4rem;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light);
+}

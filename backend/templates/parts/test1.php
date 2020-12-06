@@ -1,0 +1,1 @@
+<?php echo $param1 . "<- param1" ?>

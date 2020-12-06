@@ -1,0 +1,78 @@
+@import "../variables";
+
+.file-link {
+    &__container {
+        display: block;
+        text-decoration: none;
+        flex-basis: 20%;
+        margin-bottom:1rem;
+        @media #{$mobile} {
+            flex-basis: 33%;
+        }
+    }
+
+    &__link {
+        width: 6rem;
+        display: block;
+        text-decoration: none;
+        outline: none;
+
+        @media #{$mobile} {
+            margin: 0 auto;
+        }
+
+        &:visited, &--visited {
+            .file-link__background {
+                stroke: var(--bg);
+            }
+        }
+
+        &:hover, &--hover {
+            .file-link__background {
+                stroke: var(--secondary);
+            }
+            .file-link__pict {
+                fill: var(--secondary);
+            }
+        }
+
+        &:active, &--active {
+            .file-link__pict {
+                fill: var(--secondary-light);
+            }
+            .file-link__background {
+                stroke: var(--secondary-light);
+                fill: var(--secondary);
+            }
+            .file-link__title {
+                color: var(--secondary-light);
+            }
+
+        }
+    }
+
+    &__icon {
+        width: 6rem;
+        height: 5rem;
+        display: block;
+        margin: 0 auto;
+    }
+    &__background {
+        fill: var(--primary);
+        fill-opacity:1;
+        stroke: var(--secondary);
+        stroke-width:10;
+        transition: all .3s ease, stroke .3s ease;
+    }
+    &__pict {
+        fill:var(--bg);
+        fill-opacity:1;
+        stroke-width:0.24312793;
+        transition: fill .3s ease;
+    }
+
+    &__title {
+        color: var(--secondary);
+        text-align: center;
+    }
+}
