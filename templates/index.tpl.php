@@ -77,6 +77,14 @@ input{
 form{
     display: grid;
 }
+.sticky{
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0px;
+    background: white;
+}
+.global{
+}
 </style>
 <script src="/js/autosize.min.js"></script>
 </head>
@@ -85,5 +93,7 @@ form{
 <div class="login"><?=(@$_SESSION['user']) ? 'Logged in as <a href="/site/logout">'.htmlspecialchars($_SESSION['user']->name).'</a>.</br>'
                        : '<a href="/site/login">Login</a> or <a href="/site/register">Register</a></br>'?></div>
 </div>
+<div class="global">
 <?=$CONTENT?>
+</div>
 </body>

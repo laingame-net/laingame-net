@@ -93,38 +93,39 @@ class BlockController
             'langs' => $this->model->langs,
             'history_list' => $history_list,
         ));
-	}
-	
+    }
+
     public function EditActionGet($id = "", $lang = "", $event = "")
     {
+        include '../config.php';
         if (!$_SESSION['user']) {
             header("Location: /site/login");
         }
 
-		$data             = $this->model->getBlock($id, 'en'); // get english translation
+        $data = $this->model->getBlock($id, 'en'); // get english translation
         $data['block_jp'] = $this->model->getBlock($id, 'jp'); // get japanse translation
         $data['block_ru'] = $this->model->getBlock($id, 'ru'); // get russian translation
-		$data['block_en'] = $data;
-		$history_list = $this->model->getHistory($id, 'ru');
+        $data['block_en'] = $data;
+        $history_list = $this->model->getHistory($id, 'ru');
 
-		if( $data['block_ru'] === false)
-		{
-			$data['block_ru']['subtitles'] = $data['block_en']['subtitles'];
-			foreach($data['block_ru']['subtitles'] as $key => $value){
-				$data['block_ru']['subtitles'][$key]["text"] = '';
-				$data['block_ru']['subtitles'][$key]["comment"] = '';
-			}
-		}
+        if ($data['block_ru'] === false) {
+            $data['block_ru']['subtitles'] = $data['block_en']['subtitles'];
+            foreach ($data['block_ru']['subtitles'] as $key => $value) {
+                $data['block_ru']['subtitles'][$key]["text"] = '';
+                $data['block_ru']['subtitles'][$key]["comment"] = '';
+            }
+        }
 
         $this->view->render('block_edit', null, array(
-			'TITLE' => $data['name'] . ' Block',
-			'error_message' => '',
-			'block' => $data,
-			'id' => $id,
-			'lang' => 'ru',
-			'langs' => $this->model->langs,
-			'history_list' => $history_list
-		));
+            'TITLE' => $data['name'] . ' Block',
+            'google_api_key' => $google_api_key,
+            'error_message' => '',
+            'block' => $data,
+            'id' => $id,
+            'lang' => 'ru',
+            'langs' => $this->model->langs,
+            'history_list' => $history_list,
+        ));
     }
 
     public function EditActionPost($id = "", $lang = "", $event = "")
@@ -145,19 +146,19 @@ class BlockController
             $to_json[$key]['actor'] = $actor;
             $to_json[$key]['text'] = $_POST['text'][$key];
             $to_json[$key]['comment'] = $_POST['comment'][$key];
-		}
-		$json = json_encode($to_json);
+        }
+        $json = json_encode($to_json);
 
-		try{
-			$this->model->updateTranslation($id, 'ru', $json, intval($_SESSION['user']->id));
-		}catch (PDOException $e){
-			$this->view->render('block_edit', null, array(
-				'TITLE' => 'Block edidting',
-				'error_message' => 'Error occured',
-				'lang' => 'ru',
-				'langs' => $this->model->langs,
-			));
-		}
+        try {
+            $this->model->updateTranslation($id, 'ru', $json, intval($_SESSION['user']->id));
+        } catch (PDOException $e) {
+            $this->view->render('block_edit', null, array(
+                'TITLE' => 'Block edidting',
+                'error_message' => 'Error occured',
+                'lang' => 'ru',
+                'langs' => $this->model->langs,
+            ));
+        }
         $this->EditActionGet($id, 'ru');
     }
 }

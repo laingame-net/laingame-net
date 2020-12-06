@@ -85,8 +85,11 @@ class Model {
     m.level,
     m.page_pos,
     m.row,
-	m.col
+    m.col,
+    JSON_ARRAYAGG(t.lang) langs
     FROM data_block m
+    LEFT JOIN `translation` t on m.id = t.id_block
+    GROUP BY m.id
     ORDER BY m.site DESC, m.level desc, m.row desc, m.col asc";
 
     private $sql_blocks_by_tag = "SELECT
@@ -256,7 +259,8 @@ class Model {
             $content[$dd['site']][$dd['level']][$dd['row']][$dd['col']] = array(
                 'id' => $dd['id'],
                 'icon' => $this->icons[$dd['icon']],
-                'name' => $dd['name']
+                'name' => $dd['name'],
+                'langs' => json_decode($dd['langs'], true)
             );
         }
         return $content;

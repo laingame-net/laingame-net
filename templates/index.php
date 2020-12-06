@@ -25,7 +25,7 @@
               <div class='cell'>
               <?php if(isset($row[$i])): ?>
                 <a href="/block/edit/<?=$row[$i]['id'].'/'.$lang?>">
-                  <img src="/media/icons/<?=$row[$i]['icon']?>">
+                  <img src="/media/icons<?=((@$row[$i]['langs'][0]==NULL) or in_array('ru',$row[$i]['langs'])) ? '/grey' : '' ?>/<?=$row[$i]['icon']?>">
                   <br>
                   <?=$row[$i]['name']?>
                 </a>

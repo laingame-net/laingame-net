@@ -1,4 +1,5 @@
 <?php $this->init_page(); // we must call this function at the begining ?>
+<br>
 <form action="/site/register" method="post">
   <div class="container">
     <label for="username"><b>Username</b></label>

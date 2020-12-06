@@ -1,9 +1,52 @@
 <?php $this->init_page() // we must call this function at the begining of any page ?>
 <script>
-window.onload = function() {
-  document.getElementById("media").volume=0.5;
-  autosize(document.querySelectorAll('textarea'));
+
+const GAPIKey = "<?=$google_api_key?>";
+
+// Abstract API request function
+function gTranslateApiRequest(item) {
+  url = "https://translation.googleapis.com/language/translate/v2";
+  url += "?key=" + GAPIKey;
+  translationObj = {
+        q: item.innerHTML,
+        source: 'ja',
+        target: 'en',
+        format: 'text'
+      };
+  var trackingJSON = JSON.stringify(translationObj);
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Accept',       'application/json');
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      var resp = JSON.parse(xhr.responseText);
+      item.innerHTML += " "+resp.data.translations[0].translatedText;
+    }
+  }
+  xhr.send(trackingJSON);
 }
+
+function main()
+{
+  media = document.getElementById("media")
+  if(media) media.volume=0.5;
+  autosize(document.querySelectorAll('textarea'));
+
+  document.querySelectorAll('.ja').forEach(item => {
+    item.addEventListener('touchstart', event => {
+      gTranslateApiRequest(item);
+    })
+    item.addEventListener('dblclick', event => {
+      gTranslateApiRequest(item);
+    })
+  });
+}
+
+
+window.onload = main;
+
 </script>
 <!-- Available languages: 
 <?php foreach ($langs ?? [] as $val): ?>
@@ -63,29 +106,35 @@ window.onload = function() {
         </div>
       </div>
     </div>
-
-<?php if($block['type'] == 2): // video ?>
-    <video id="media" width="640" controls="" height="32" >
-      <source src="/media/<?=$block['name']?>.mp4" type="video/mp4">
-    </video>
+<?php if($block['type'] == 2): // audio ?>
     <div class='table'>
       <div class='row'>
 <?php for($i=1; $i<=3; $i++):?>
 <?php if(isset($block['img'.$i])):?>
-        <div class='cell' style='text-align:center;'><img src="/media/<?=sprintf("img_%d_%03d.png", $block['site'],$block['img'.$i])?>"></div>
+<?php $img_name = sprintf("img_%d_%03d", $block['site'],$block['img'.$i]);?>
+        <div class='cell' style='text-align:center;'><a href="/media_upscale/<?=$img_name?>.jpg" target="_blank"><img src="/media/<?=$img_name?>.png"></a></div>
 <?php endif // if isset block img?>
 <?php endfor?>
       </div>
     </div>
-<?php elseif($block['type'] == 3): // audio ?>
+<?php endif // if($block['type'] == 2 ?>
+  </div>
+</div>
+<div class="container <?=($block['type'] == 2) ? 'sticky' : ''?>">
+  <div class="block">
+<?php if($block['type'] == 2): // audio ?>
+    <video id="media" width="640" controls="" height="32" >
+      <source src="/media/<?=$block['name']?>.mp4" type="video/mp4">
+    </video>
+<?php elseif($block['type'] == 3): // video ?>
 <video id="media" width="640" controls=""> <!-- height="32" -->
       <source src="/media/<?=$block['name']?>.mp4" type="video/mp4">
 </video>
 <?php endif // if($block['type'] == 2 ?>
-<?php if( $block['block_en']['subtitles'] ): ?>
   </div>
 </div>
 <br>
+<?php if( $block['block_en']['subtitles'] ): ?>
   <div class='table'>
     <div class='row'>
       <div class='cell' style="width:70%">
@@ -93,9 +142,9 @@ window.onload = function() {
 
         <table style="border:0">
           <tr>
-            <td style="width:16%"><input type="submit" class="btn" value="Сохранить" /></td>
+            <td style="width:16%"><input type="submit" class="btn" value="Save" /></td>
             <td style="width:24%"><?php if($history_list):?>
-Предыдущие версии перевода:<br>
+Previous translation versions:<br>
 <?php foreach ($history_list ?? [] as $key => $history): ?>
   <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
@@ -108,10 +157,10 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
 
         <table>
         <tr>
-          <th style="width:15%">Актер</th>
-          <th style="width:30%">Русский фан перевод</th>
-          <th style="width:25%">Английский фан перевод</th>
-          <th style="width:30%">Комментарий</th>
+          <th style="width:15%">Actor</th>
+          <th style="width:30%">Russian translation</th>
+          <th style="width:25%">English translation</th>
+          <th style="width:30%">Comment</th>
         </tr>
 <?php foreach ($block['block_ru']['subtitles'] ?? [] as $key => $line): ?>
         <tr>
@@ -125,9 +174,9 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
         <br>
         <table style="border:0">
           <tr>
-            <td style="width:20%"><input type="submit" class="btn" value="Сохранить" /></td>
+            <td style="width:20%"><input type="submit" class="btn" value="Save" /></td>
             <td><?php if($history_list):?>
-Предыдущие версии перевода:<br>
+Previous translation versions:<br>
 <?php foreach ($history_list ?? [] as $key => $history): ?>
   <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
 title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
@@ -142,13 +191,13 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
       <div class='cell'>
         <table>
         <tr>
-          <th>Актер</th>
-          <th>Японский транскрипт</th>
+          <th>Actor</th>
+          <th>Japanese transcription</th>
         </tr>
 <?php foreach ($block['block_jp']['subtitles'] ?? [] as $line): ?>
         <tr>
-          <td><?=$line['actor']?></td>
-          <td><?=$line['text']?></td>
+          <td class="ja"><?=$line['actor']?></td>
+          <td class="ja"><?=$line['text']?></td>
         </tr>
 <?php endforeach ?>
         </table>
