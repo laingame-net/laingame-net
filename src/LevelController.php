@@ -8,14 +8,15 @@ class LevelController
 
     public function __construct()
     {
-        $this->model = ($model) ?: $GLOBALS['model'];
+        $this->model = (isset($model)) ? $model : $GLOBALS['model'];
         $this->view = new View("../templates");
     }
 
     public function ViewActionGet($id = "", $lang = "", $event = "")
     {
-        $data = $this->model->getBlocksTable(0);
-        $this->view->render('index', 'index', array(
+        list($site, $level) = explode('-', $id, 2);
+        $data = $this->model->getLevel($site, $level);
+        $this->view->render('level', 'level', array(
             'TITLE' => 'Level',
             'data_blocks' => $data,
             'lang' => $lang,

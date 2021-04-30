@@ -76,6 +76,23 @@ class Model {
     where db.id = :id
     and (lang = :lang or lang is null)";
 
+    private $sql_level = "SELECT
+    m.id,
+    m.icon,
+    m.name,
+    m.type,
+    m.site,
+    m.level,
+    m.page_pos,
+    m.row,
+    m.col,
+    JSON_ARRAYAGG(t.lang) langs
+    FROM data_block m
+    LEFT JOIN `translation` t on m.id = t.id_block
+    WHERE m.site = :site and m.level = :level
+    GROUP BY m.id
+    ORDER BY m.site DESC, m.level desc, m.row desc, m.col asc";
+
     private $sql_blocks_table = "SELECT
     m.id,
     m.icon,
@@ -247,6 +264,23 @@ class Model {
             }
         }
         return $results;
+    }
+
+    public function getLevel($site, $level)
+    {
+        if($site != 0 or $site != 1) $site = 0;
+        $content = array();
+        $table_result = $this->db->prepare($this->sql_level);
+        $table_result->execute(['site'=>$site, 'level'=>$level]);
+        while ($dd = $table_result->fetch(PDO::FETCH_ASSOC)) {
+            $content[$dd['site']][$dd['level']][$dd['row']][$dd['col']] = array(
+                'id' => $dd['id'],
+                'icon' => $this->icons[$dd['icon']],
+                'name' => $dd['name'],
+                'langs' => json_decode($dd['langs'], true)
+            );
+        }
+        return $content;
     }
 
     public function getBlocksTable($site)

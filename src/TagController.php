@@ -7,7 +7,7 @@ class TagController {
 
     public function __construct()
     {
-		$this->model = ($model) ?: $GLOBALS['model'];
+        $this->model = (isset($model)) ? $model : $GLOBALS['model'];
 		$this->view = new View("../templates");
     }
 

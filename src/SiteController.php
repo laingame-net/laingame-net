@@ -7,7 +7,7 @@ class SiteController
 {
     public function __construct($model = null)
     {
-        $this->model = ($model) ?: $GLOBALS['model'];
+        $this->model = (isset($model)) ? $model : $GLOBALS['model'];
         $this->view = new View("../templates");
     }
 

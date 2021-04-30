@@ -35,7 +35,6 @@ class View
         $this->parameters = $parameters ?? [];
         //$this->parameters['site'] = $this->model->getLangStrings();
         if(is_array($parameters)) extract($parameters);
-        $a = 1;
         include( $this->templates_path . DIRECTORY_SEPARATOR . $page_name . $this->ext );
     }
 
