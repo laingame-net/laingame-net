@@ -3,10 +3,10 @@
 <form action="/site/register" method="post">
   <div class="container">
     <label for="username"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username" value="<?=$last_post['username']?>" required>
+    <input type="text" placeholder="Enter Username" name="username" value="<?=@$last_post['username']?>" required>
 
     <label for="email"><b>E-mail</b></label>
-    <input type="text" placeholder="Enter E-mail" name="email" value="<?=$last_post['email']?>" required>
+    <input type="text" placeholder="Enter E-mail" name="email" value="<?=@$last_post['email']?>" required>
 
     <label for="password1"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password1" required>
@@ -21,6 +21,6 @@
       </label>
     </div>
     <button type="submit">Register</button>
-    <?=$error ? '<div>'.$error.'</div>' : ''?>
+    <?=@$error ? '<div>'.$error.'</div>' : ''?>
   </div>
 </form>

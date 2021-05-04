@@ -98,7 +98,7 @@ class BlockController
     public function EditActionGet($id = "", $lang = "", $event = "")
     {
         include '../config.php';
-        if (!$_SESSION['user']) {
+        if (!isset($_SESSION['user'])) {
             header("Location: /site/login");
         }
 

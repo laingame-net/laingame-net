@@ -11,4 +11,6 @@ $https    = true;
 $httponly = true;
 $samesite = 'Lax';
 
+$google_api_key = "";
+
 ?>

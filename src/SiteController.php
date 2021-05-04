@@ -112,7 +112,6 @@ class SiteController
     {
         $this->view->render('login', null, array(
             'TITLE' => 'Login',
-            'data_blocks' => $data,
             'lang' => $lang,
             'langs' => $this->model->langs,
         ));
@@ -221,7 +220,7 @@ class SiteController
             unset($user_from_db->password);
         }
 
-        if ($error) {
+        if (isset($error)) {
             $this->view->render('login', null, array(
                 'TITLE' => 'Login',
                 'last_username' => $_POST["username"],

@@ -15,7 +15,7 @@
     <?php foreach($site as $lkey => $level): ?>
       <div class='row level'>
         <div class='cell' id="<?='site'.$skey.'level'.$lkey?>">
-          <a href="/level/view/<?=$lkey.'/'.$lang?>"><?="site ".$skey." level ".$lkey?></a>
+          <a href="/level/view/<?=(($skey==1)?'a':'b').'-'.$lkey.'/'.$lang?>"><?="site ".$skey." level ".$lkey?></a>
         </div>
       </div>
       <?php foreach ($level as $rkey => $row): ?>

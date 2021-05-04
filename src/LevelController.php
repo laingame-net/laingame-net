@@ -14,7 +14,7 @@ class LevelController
 
     public function ViewActionGet($id = "", $lang = "", $event = "")
     {
-        list($site, $level) = explode('-', $id, 2);
+        @list($site, $level) = explode('-', $id, 2);
         $data = $this->model->getLevel($site, $level);
         $this->view->render('level', 'level', array(
             'TITLE' => 'Level',
