@@ -39,9 +39,10 @@ services:
     image: nginx:alpine
     expose:
       - "80"
-      - "443"
+      #- "443"
     ports:
       - "${NGINX_PORT}:80"
+      #- "${SSL_PORT}:443"
     depends_on:
       - php
     volumes:
@@ -51,16 +52,16 @@ services:
     networks:
       default:
         aliases:
-          - laingame.local
+          - raw.laingame.net
 
-  node:
-    build: containers/node
-    restart: "no"
-    environment:
-      LANG: "C.UTF-8"
-    working_dir: /var/www/laingame.net
-    volumes_from:
-      - php
+#  node:
+#    build: containers/node
+#    restart: "no"
+#    environment:
+#      LANG: "C.UTF-8"
+#    working_dir: /var/www/laingame.net
+#    volumes_from:
+#      - php
 
 volumes:
   mysql:
