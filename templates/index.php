@@ -26,8 +26,9 @@
               <?php if(isset($row[$i])): ?>
                 <a href="/block/edit/<?=$row[$i]['id'].'/'.$lang?>">
                   <img src="/media/icons<?=((@$row[$i]['langs'][0]==NULL) or in_array('ru',$row[$i]['langs'])) ? '/grey' : '' ?>/<?=$row[$i]['icon']?>">
+                  <!--<ellipse ry="88.743729" rx="120.81977" cy="93.763245" cx="125.83929" class="file-link__background"></ellipse>-->
                   <br>
-                  <?=$row[$i]['name']?>
+                  <div class="file-link__title"><?=strtoupper($row[$i]['name'])?></div>
                 </a>
               <?php endif ?>
               </div>

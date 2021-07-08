@@ -8,6 +8,11 @@ html, body{
     height:100%;
     margin:0;
     padding:0;
+	font-family: JetBrainsMono,sans-serif;
+	font-size: 16px;
+}
+a {
+	text-decoration: none;
 }
 table,tr,td,th {
     border: 1px solid black;
@@ -82,6 +87,17 @@ form{
     position: sticky;
     top: 0px;
     background: white;
+}
+.file-link__background {
+	/*fill:var(--primary);*/
+	fill-opacity:1;
+	/*stroke:var(--secondary);*/
+	stroke-width:10;
+	transition:all .3s ease,stroke .3s ease
+}
+.file-link__title {
+	color:#FFB84E;
+	text-align:center;
 }
 .global{
 }
