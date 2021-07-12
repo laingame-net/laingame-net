@@ -112,7 +112,7 @@ window.onload = main;
 <?php for($i=1; $i<=3; $i++):?>
 <?php if(isset($block['img'.$i])):?>
 <?php $img_name = sprintf("img_%d_%03d", $block['site'],$block['img'.$i]);?>
-        <div class='cell' style='text-align:center;'><a href="/media_upscale/<?=$img_name?>.jpg" target="_blank"><img src="/media/<?=$img_name?>.png"></a></div>
+        <div class='cell' style='text-align:center;'><a href="/media/upscale/<?=$img_name?>.jpg" target="_blank"><img src="/media/<?=$img_name?>.png"></a></div>
 <?php endif // if isset block img?>
 <?php endfor?>
       </div>
@@ -147,7 +147,7 @@ window.onload = main;
 Previous translation versions:<br>
 <?php foreach ($history_list ?? [] as $key => $history): ?>
   <a href="/block/history/<?=$block['id']?>/<?=$lang?>?_event=<?=$history['id_history']?>"
-title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
+title="Edited by: <?=$history['user_name']."\n"?>Date: <?=$history['date']?>"><?=$key+1?></a>
 <?php endforeach ?>
 <?php endif ?></td>
             <td style="width:60%"></td>
@@ -166,7 +166,7 @@ title="Edited by: <?=(_($history['user_name']) ?: "unknown")."\n"?>Date: <?=$his
         <tr>
           <td><textarea type="text" id="actor<?=$key?>" name="actor[]"><?=$line['actor']?></textarea></td>
           <td><textarea type="text" id="text<?=$key?>" name="text[]"><?=$line['text']?></textarea></td>
-          <td><?=$block['block_en']['subtitles'][$key]['text']?></td>
+          <td><?=@$block['block_en']['subtitles'][$key]['text']?></td>
           <td><textarea type="text" id="comment<?=$key?>" name="comment[]"><?=$line['comment']?></textarea></td>
         </tr>
 <?php endforeach ?>

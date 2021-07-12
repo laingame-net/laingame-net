@@ -142,7 +142,7 @@ class Model {
     FROM
     translation_history as th
     LEFT JOIN `user` as us ON us.id = th.edited_by
-    WHERE change_type = 'edit' and id_block = :block_id and lang = :lang";
+    WHERE change_type != 'delete' and id_block = :block_id and lang = :lang";
 
     private $sql_history_subtitles = "SELECT
     th.id_history,
@@ -176,6 +176,12 @@ class Model {
     FROM laingame.`user` as us
     INNER JOIN `session` as se ON se.id_user = us.id
     WHERE se.series = LOWER(:series)";
+
+    private $sql_latest_changes = "SELECT h.id_history, h.change_type, h.date_begin, db.id block_id, db.name block_name, u.name user_name
+    FROM laingame.translation_history h
+    INNER JOIN laingame.`user` u on u.id = h.edited_by
+    INNER JOIN laingame.data_block db on db.id = h.id_block
+    ORDER BY id_history DESC LIMIT 40";
 
     private $sql_insert_session = "INSERT INTO laingame.`session`
     (id_user, series, token, created, expired, last_used )
@@ -263,6 +269,14 @@ class Model {
                 $results[$key]['subtitles'] = json_decode($result['subtitles'], true);
             }
         }
+        return $results;
+    }
+
+    public function getLatestChanges()
+    {
+        $list = $this->db->prepare($this->sql_latest_changes);
+        $list->execute();
+        $results = $list->fetchAll(PDO::FETCH_ASSOC);
         return $results;
     }
 

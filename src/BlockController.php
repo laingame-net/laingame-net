@@ -71,16 +71,16 @@ class BlockController
         require 'simplediff.php';
         foreach ($data["subtitles"] as $key => $sub) {
             // text
-            $from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['text']);
-            $to = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['text']);
+            $from = htmlspecialchars(@$subtitres_list[1]["subtitles"][$key]['text']);
+            $to = htmlspecialchars(@$subtitres_list[0]["subtitles"][$key]['text']);
             $data["subtitles"][$key]['text'] = htmlDiff($from, $to);
             // actor
-            $from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['actor']);
-            $to = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['actor']);
+            $from = htmlspecialchars(@$subtitres_list[1]["subtitles"][$key]['actor']);
+            $to = htmlspecialchars(@$subtitres_list[0]["subtitles"][$key]['actor']);
             $data["subtitles"][$key]['actor'] = htmlDiff($from, $to);
             // comment
-            $from = htmlspecialchars($subtitres_list[1]["subtitles"][$key]['comment']);
-            $to = htmlspecialchars($subtitres_list[0]["subtitles"][$key]['comment']);
+            $from = htmlspecialchars(@$subtitres_list[1]["subtitles"][$key]['comment']);
+            $to = htmlspecialchars(@$subtitres_list[0]["subtitles"][$key]['comment']);
             $data["subtitles"][$key]['comment'] = htmlDiff($from, $to);
         }
 

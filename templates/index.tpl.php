@@ -83,7 +83,15 @@ form{
     top: 0px;
     background: white;
 }
+.float-global{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+}
 .global{
+}
+.changes {
+    width: 400px;
 }
 </style>
 <script src="/js/autosize.min.js"></script>
