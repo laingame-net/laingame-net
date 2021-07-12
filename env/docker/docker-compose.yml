@@ -1,7 +1,36 @@
 version: '2'
 
 services:
-  php:
+  nginx-proxy:
+    restart: always
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme-companion:
+    restart: always
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    #network_mode: bridge
+    #networks:
+    #  - proxy-tier
+
+  laingame-php:
     build: containers/php-fpm
     restart: always
     expose:
@@ -12,9 +41,9 @@ services:
     volumes:
       - ../../:/var/www/laingame.net
     depends_on:
-      - mysql
+      - laingame-mysql
 
-  mysql:
+  laingame-mysql:
     restart: always
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -34,25 +63,25 @@ services:
     volumes:
       - ../../database/laingame.sql:/docker-entrypoint-initdb.d/0_init.sql
 
-  nginx:
+  laingame-nginx:
     restart: always
     image: nginx:alpine
     expose:
       - "80"
-      #- "443"
-    ports:
-      - "${NGINX_PORT}:80"
-      #- "${SSL_PORT}:443"
+    #ports:
+    #  - "${NGINX_PORT}:80"
+    #  - "${SSL_PORT}:443"
     depends_on:
-      - php
+      - laingame-php
     volumes:
       - ./config/nginx/vhost:/etc/nginx/conf.d
     volumes_from:
-      - php
-    networks:
-      default:
-        aliases:
-          - raw.laingame.net
+      - laingame-php
+    environment:
+      - VIRTUAL_HOST=raw.laingame.net
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=raw.laingame.net
+      - LETSENCRYPT_EMAIL=laingame.net@gmail.com
 
 #  node:
 #    build: containers/node
@@ -61,8 +90,19 @@ services:
 #      LANG: "C.UTF-8"
 #    working_dir: /var/www/laingame.net
 #    volumes_from:
-#      - php
+#      - laingame-php
 
 volumes:
   mysql:
     driver: local
+  conf:
+  vhost:
+  html:
+  dhparam:
+  certs:
+  acme:
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
